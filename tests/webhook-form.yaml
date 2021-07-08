@@ -5,4 +5,4 @@ metadata:
 spec:
   repository: camptocamp/operator-github-webhook
   url: https://example.com
-  contentType: json
+  contentType: form
