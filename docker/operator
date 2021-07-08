@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+import logging
+import os
+import sys
+
+import kubernetes  # type: ignore
+import requests
+
+LOG = logging.getLogger(__name__)
+
+
+AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
+
+
+class Main:
+    def __init__(self):
+
+        logging.basicConfig(level=os.environ.get("LOGLEVEL", logging.INFO))
+
+        try:
+            kubernetes.config.load_kube_config()
+        except:
+            kubernetes.config.load_incluster_config()
+
+        self.api = kubernetes.client.CoreV1Api()
+        self.custom_api = kubernetes.client.CustomObjectsApi()
+        self.watch = kubernetes.watch.Watch()
+        self.watch_webhooks()
+
+    def watch_webhooks(self) -> None:
+        try:
+            for event in self.watch.stream(
+                self.custom_api.list_cluster_custom_object,
+                group="camptocamp.com",
+                version="v1",
+                plural="githubwebhooks",
+            ):
+                metadata = event["object"]["metadata"]
+
+                LOG.debug(
+                    "Event %s, Service Name: %s, Namespace: %s",
+                    event.get("type"),
+                    metadata.get("name"),
+                    metadata.get("namespace"),
+                )
+
+                webhooks = requests.get(
+                    f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
+                    headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+                ).json()
+
+                if event["type"] == "DELETED":
+                    for webhook in webhooks:
+                        if webhook["config"]["url"] == event["object"]["spec"]["url"] and webhook["config"][
+                            "content_type"
+                        ] == event["object"]["spec"].get("contentType", "json"):
+                            result = requests.delete(
+                                f"https://api.github.com/repos/{event['object']['spec']['repository']}/"
+                                f"hooks/{webhook['id']}",
+                                headers={
+                                    "Accept": "application/vnd.github.v3+json",
+                                    "Authorization": AUTH_HEADER,
+                                },
+                            )
+                            if not result.ok:
+                                LOG.warning(
+                                    "Unable to delete webhook %s on repository %s: %s",
+                                    event["object"]["spec"]["url"],
+                                    event["object"]["spec"]["repository"],
+                                    result.text,
+                                )
+                            else:
+                                LOG.info(
+                                    "Webhook %s on repository %s deleted",
+                                    event["object"]["spec"]["url"],
+                                    event["object"]["spec"]["repository"],
+                                )
+                                LOG.debug(result.text)
+                    continue
+
+                found = False
+                for webhook in webhooks:
+                    if webhook["config"]["url"] == event["object"]["spec"]["url"] and webhook["config"][
+                        "content_type"
+                    ] == event["object"]["spec"].get("contentType", "json"):
+                        found = True
+                        break
+                if not found:
+                    result = requests.post(
+                        f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
+                        headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+                        json={
+                            "config": {
+                                "content_type": event["object"]["spec"].get("contentType", "json"),
+                                "url": event["object"]["spec"]["url"],
+                            }
+                        },
+                    )
+                    if not result.ok:
+                        LOG.warning(
+                            "Unable to create webhook %s on repository %s: %s",
+                            event["object"]["spec"]["url"],
+                            event["object"]["spec"]["repository"],
+                            result.text,
+                        )
+                    else:
+                        LOG.info(
+                            "Webhook %s on repository %s created",
+                            event["object"]["spec"]["url"],
+                            event["object"]["spec"]["repository"],
+                        )
+                        LOG.debug(result.text)
+
+            LOG.error("The watch exited")
+            sys.exit(1)
+        except:
+            LOG.exception("The error on watch")
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    Main()
