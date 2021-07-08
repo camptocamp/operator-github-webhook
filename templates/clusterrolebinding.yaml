@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "operator-github-webhook.fullname" . }}
+  labels:
+    {{- include "operator-github-webhook.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "operator-github-webhook.serviceAccountName" . }}
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: {{ include "operator-github-webhook.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io

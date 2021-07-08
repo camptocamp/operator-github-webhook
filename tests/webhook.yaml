@@ -1,0 +1,10 @@
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
+metadata:
+  name: test1
+  labels:
+    test: test1
+spec:
+  repository: camptocamp/operator-github-webhook
+  payloadUrl: https://example.com
+  contentType: json
