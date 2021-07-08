@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "operator-github-webhook.fullname" . }}
+  labels:
+    {{- include "operator-github-webhook.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - camptocamp.com
+    resources:
+      - githubwebhooks
+    verbs:
+      - get
+      - list
+      - watch
