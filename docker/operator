@@ -44,6 +44,7 @@ class Main:
                     metadata.get("name"),
                     metadata.get("namespace"),
                 )
+                LOG.error(event)
 
                 webhooks = requests.get(
                     f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",

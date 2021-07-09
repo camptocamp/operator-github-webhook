@@ -106,6 +106,32 @@ def test_operator(install_operator):
             time.sleep(1)
     assert len(webhooks) == 1
 
+    subprocess.run(["kubectl", "apply", "-f", "tests/webhook-form.yaml"], check=True)
+
+    for _ in range(10):
+        webhooks = [
+            wh
+            for wh in requests.get(
+                "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
+                headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+            ).json()
+            if wh["config"]["url"] == "https://example.com" and wh["config"]["content_type"] == "form"
+        ]
+        if len(webhooks) == 1:
+            break
+        else:
+            time.sleep(1)
+    assert len(webhooks) == 1
+    webhooks = [
+        wh
+        for wh in requests.get(
+            "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
+            headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+        ).json()
+        if wh["config"]["url"] == "https://example.com"
+    ]
+    assert len(webhooks) == 1
+
     subprocess.run(["kubectl", "delete", "-f", "tests/webhook.yaml"], check=True)
 
     for _ in range(10):
