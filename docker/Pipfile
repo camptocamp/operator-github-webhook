@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 kubernetes = "==17.17.0"
-requests = "==2.25.1"
+requests = "==2.26.0"
 types-requests = "==2.25.0"
 
 [dev-packages]
