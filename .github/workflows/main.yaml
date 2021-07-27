@@ -55,7 +55,7 @@ jobs:
       - run: k3d image import camptocamp/github-webhook-operator:latest --cluster=test-cluster-1
 
       - run: helm template test . > template.yaml
-      - run: kubectl apply -f template.yaml
+      #- run: kubectl apply -f template.yaml
 
       - run: make tests
         env:
