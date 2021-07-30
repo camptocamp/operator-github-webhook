@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "31e533d008fc43617c6353b478609c1cd78c427d2238c8c5cadad180feb9f51b"
+            "sha256": "8d63914b09bdb4a51abfe3784a7f1496e70ec6c3aa2f43a010cef45927754af1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -33,19 +33,19 @@
         },
         "charset-normalizer": {
             "hashes": [
-                "sha256:ad0da505736fc7e716a8da15bf19a985db21ac6415c26b34d2fafd3beb3d927e",
-                "sha256:b68b38179052975093d71c1b5361bf64afd80484697c1f27056e50593e695ceb"
+                "sha256:88fce3fa5b1a84fdcb3f603d889f723d1dd89b26059d0123ca435570e848d5e1",
+                "sha256:c46c3ace2d744cfbdebceaa3c19ae691f53ae621b39fd7570f59d14fb7f2fd12"
             ],
             "markers": "python_version >= '3'",
-            "version": "==2.0.1"
+            "version": "==2.0.3"
         },
         "google-auth": {
             "hashes": [
-                "sha256:9266252e11393943410354cf14a77bcca24dd2ccd9c4e1aef23034fe0fbae630",
-                "sha256:c7c215c74348ef24faef2f7b62f6d8e6b38824fe08b1e7b7b09a02d397eda7b3"
+                "sha256:bd6aa5916970a823e76ffb3d5c3ad3f0bedafca0a7fa53bc15149ab21cb71e05",
+                "sha256:f1094088bae046fb06f3d1a3d7df14717e8d959e9105b79c57725bd4e17597a2"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.32.1"
+            "version": "==1.34.0"
         },
         "idna": {
             "hashes": [
@@ -184,11 +184,11 @@
         },
         "types-requests": {
             "hashes": [
-                "sha256:ee0d0c507210141b7d5b8639cc43eaa726084178775db2a5fb06fbf85c185808",
-                "sha256:fa5c1e5e832ff6193507d8da7e1159281383908ee193a2f4b37bc08140b51844"
+                "sha256:2d514ee172088a8fc0d554537d6424bd261c18e63195cfe47c410df0de0ed96f",
+                "sha256:6e9534281fe5d06ba8116807a8de930b90b6f92dff179f8cbfa2dfdd3bd2c465"
             ],
             "index": "pypi",
-            "version": "==2.25.0"
+            "version": "==2.25.1"
         },
         "urllib3": {
             "hashes": [
