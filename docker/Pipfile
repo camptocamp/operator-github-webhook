@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 kubernetes = "==18.20.0"
 requests = "==2.26.0"
-types-requests = "==2.25.8"
+types-requests = "==2.25.9"
 
 [dev-packages]
 prospector = {version = "==1.5.1", extras = ["with_bandit", "with_mypy"]}
