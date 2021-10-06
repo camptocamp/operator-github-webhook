@@ -45,6 +45,7 @@ jobs:
 
       # Setup k3s/k3d
       - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+      - run: k3d --version
       - run: >-
           k3d cluster create test-cluster-1
           --no-lb
