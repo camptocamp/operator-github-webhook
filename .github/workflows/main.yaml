@@ -39,12 +39,12 @@ jobs:
       - name: Lint
         run: make prospector
 
-      # Instsall helm
+      # Install helm
       - uses: azure/setup-helm@v1
       - run: helm lint .
 
       # Setup k3s/k3d
-      - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+      - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.8 bash
       - run: k3d --version
       - run: >-
           k3d cluster create test-cluster-1
