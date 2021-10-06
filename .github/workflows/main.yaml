@@ -14,6 +14,7 @@ jobs:
     name: Continuous integration
     timeout-minutes: 20
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
+    concurrency: main # to avoid parallel tests
 
     steps:
       - uses: actions/checkout@v2
@@ -39,12 +40,13 @@ jobs:
       - name: Lint
         run: make prospector
 
-      # Instsall helm
+      # Install helm
       - uses: azure/setup-helm@v1
       - run: helm lint .
 
       # Setup k3s/k3d
-      - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+      - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.8 bash
+      - run: k3d --version
       - run: >-
           k3d cluster create test-cluster-1
           --no-lb
