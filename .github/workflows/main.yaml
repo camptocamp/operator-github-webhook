@@ -40,30 +40,23 @@ jobs:
       - name: Lint
         run: make prospector
 
-      # Install helm
-      - uses: azure/setup-helm@v1
+      - name: Install helm
+        uses: azure/setup-helm@v1
       - run: helm lint .
 
-      # Setup k3s/k3d
-      - run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.8 bash
-      - run: k3d --version
-      - run: >-
-          k3d cluster create test-cluster-1
-          --no-lb
-          --no-hostip
-          --no-rollback
-          --k3s-server-arg "--no-deploy=traefik,servicelb,metrics-server"
-      # Import my image
-      - run: k3d image import camptocamp/github-webhook-operator:latest --cluster=test-cluster-1
+      - name: Setup k3s/k3d
+        run: c2cciutils-k8s-install
+
+      - name: Import my image
+        run: k3d image import camptocamp/github-webhook-operator:latest --cluster=test-cluster
 
       - run: helm template test . > template.yaml
-      #- run: kubectl apply -f template.yaml
 
       - run: make tests
         env:
           GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
 
-      - run: ci/k8s-logs || true
+      - run: c2cciutils-k8s-logs
         if: always()
 
       - name: Publish
