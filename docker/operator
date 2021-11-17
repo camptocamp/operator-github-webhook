@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime
+import json
 import logging
 import os
 import sys
@@ -68,108 +69,134 @@ class Main:
                 version="v1",
                 plural="githubwebhooks",
             ):
-                start = time.time()
-                metadata = event["object"]["metadata"]
+                try:
+                    start = time.time()
+                    metadata = event["object"]["metadata"]
 
-                LOG.info(
-                    "Event %s, Service Name: %s, Namespace: %s",
-                    event.get("type"),
-                    metadata.get("name"),
-                    metadata.get("namespace"),
-                )
-                LOG.debug("Receive event: %s", event)
-                LOG.debug("Event date: %s", datetime.datetime.now())
+                    LOG.info(
+                        "Event %s, Service Name: %s, Namespace: %s",
+                        event.get("type"),
+                        metadata.get("name"),
+                        metadata.get("namespace"),
+                    )
+                    LOG.debug("Receive event: %s", event)
+                    LOG.debug("Event date: %s", datetime.datetime.now())
 
-                k8s_id: Tuple[str, str] = (metadata["name"], metadata["namespace"])
-                gh_id: Tuple[str, str] = (
-                    event["object"]["spec"]["url"],
-                    event["object"]["spec"]["repository"],
-                )
+                    k8s_id: Tuple[str, str] = (metadata["name"], metadata["namespace"])
+                    gh_id: Tuple[str, str] = (
+                        event["object"]["spec"]["url"],
+                        event["object"]["spec"]["repository"],
+                    )
 
-                webhooks = requests.get(
-                    f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
-                    headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-                ).json()
+                    webhooks = requests.get(
+                        f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
+                        headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+                    ).json()
 
-                if event["type"] == "DELETED":
-                    delete_id = 0
-                    if gh_id in self.webhooks:
-                        self.webhooks[gh_id].objects.remove(k8s_id)
-                        if len(self.webhooks[gh_id].objects) == 0:
-                            delete_id = self.webhooks[gh_id].id_
-                            del self.webhooks[gh_id]
+                    if event["type"] == "DELETED":
+                        delete_id = 0
+                        if gh_id in self.webhooks:
+                            self.webhooks[gh_id].objects.remove(k8s_id)
+                            if len(self.webhooks[gh_id].objects) == 0:
+                                delete_id = self.webhooks[gh_id].id_
+                                del self.webhooks[gh_id]
+                            else:
+                                continue
                         else:
-                            continue
-                    else:
-                        for webhook in webhooks:
+                            for webhook in webhooks:
+                                try:
+                                    if webhook["config"]["url"] == event["object"]["spec"]["url"] and webhook[
+                                        "config"
+                                    ]["content_type"] == event["object"]["spec"].get("contentType", "json"):
+                                        delete_id = webhook["id"]
+                                except Exception as exception:  # pylint: disable=broad-except
+                                    LOG.exception(
+                                        "Error: %s\nWith webhook:\n%s\nOn event:\n%s",
+                                        exception,
+                                        json.dumps(webhook),
+                                        json.dumps(event),
+                                    )
+                        if k8s_id in self.k8s_webhook:
+                            del self.k8s_webhook[k8s_id]
+                        delete_webhook(
+                            event["object"]["spec"]["url"],
+                            event["object"]["spec"]["repository"],
+                            delete_id,
+                        )
+                        continue
+
+                    if event["type"] == "MODIFIED":
+                        LOG.debug("Delete old web hook")
+                        if k8s_id in self.k8s_webhook:
+                            webhook = self.webhooks[self.k8s_webhook[k8s_id]]
+                            webhook.objects.remove(k8s_id)
+                            if len(webhook.objects) == 0:
+                                delete_webhook(
+                                    event["object"]["spec"]["url"],
+                                    event["object"]["spec"]["repository"],
+                                    self.webhooks[self.k8s_webhook[k8s_id]].id_,
+                                )
+                                del self.webhooks[self.k8s_webhook[k8s_id]]
+
+                    found = False
+                    for webhook in webhooks:
+                        try:
                             if webhook["config"]["url"] == event["object"]["spec"]["url"] and webhook[
                                 "config"
                             ]["content_type"] == event["object"]["spec"].get("contentType", "json"):
-                                delete_id = webhook["id"]
-                    if k8s_id in self.k8s_webhook:
-                        del self.k8s_webhook[k8s_id]
-                    delete_webhook(
-                        event["object"]["spec"]["url"],
-                        event["object"]["spec"]["repository"],
-                        delete_id,
-                    )
-                    continue
-
-                if event["type"] == "MODIFIED":
-                    LOG.debug("Delete old web hook")
-                    if k8s_id in self.k8s_webhook:
-                        webhook = self.webhooks[self.k8s_webhook[k8s_id]]
-                        webhook.objects.remove(k8s_id)
-                        if len(webhook.objects) == 0:
-                            delete_webhook(
+                                self.k8s_webhook[k8s_id] = gh_id
+                                if gh_id not in self.webhooks:
+                                    self.webhooks[gh_id] = WebHook(webhook["id"])
+                                self.webhooks[gh_id].objects.append(k8s_id)
+                                found = True
+                                break
+                        except Exception as exception:  # pylint: disable=broad-except
+                            LOG.exception(
+                                "Error: %s\nWith webhook:\n%s\nOn event:\n%s",
+                                exception,
+                                json.dumps(webhook),
+                                json.dumps(event),
+                            )
+                    if not found:
+                        result = requests.post(
+                            f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
+                            headers={
+                                "Accept": "application/vnd.github.v3+json",
+                                "Authorization": AUTH_HEADER,
+                            },
+                            json={
+                                "config": {
+                                    "content_type": event["object"]["spec"].get("contentType", "json"),
+                                    "url": event["object"]["spec"]["url"],
+                                }
+                            },
+                        )
+                        if not result.ok:
+                            LOG.warning(
+                                "Unable to create webhook %s on repository %s: %s",
                                 event["object"]["spec"]["url"],
                                 event["object"]["spec"]["repository"],
-                                self.webhooks[self.k8s_webhook[k8s_id]].id_,
+                                result.text,
                             )
-                            del self.webhooks[self.k8s_webhook[k8s_id]]
+                        else:
+                            self.k8s_webhook[k8s_id] = gh_id
+                            if gh_id not in self.webhooks:
+                                self.webhooks[gh_id] = WebHook(result.json()["id"])
+                            self.webhooks[gh_id].objects.append(k8s_id)
+                            LOG.info(
+                                "Webhook %s on repository %s created",
+                                event["object"]["spec"]["url"],
+                                event["object"]["spec"]["repository"],
+                            )
+                            LOG.debug(result.text)
+                    LOG.debug("Elapse time on the event %s", time.time() - start)
 
-                found = False
-                for webhook in webhooks:
-                    if webhook["config"]["url"] == event["object"]["spec"]["url"] and webhook["config"][
-                        "content_type"
-                    ] == event["object"]["spec"].get("contentType", "json"):
-                        self.k8s_webhook[k8s_id] = gh_id
-                        if gh_id not in self.webhooks:
-                            self.webhooks[gh_id] = WebHook(webhook["id"])
-                        self.webhooks[gh_id].objects.append(k8s_id)
-                        found = True
-                        break
-                if not found:
-                    result = requests.post(
-                        f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
-                        headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-                        json={
-                            "config": {
-                                "content_type": event["object"]["spec"].get("contentType", "json"),
-                                "url": event["object"]["spec"]["url"],
-                            }
-                        },
+                except Exception as exception:  # pylint: disable=broad-except
+                    LOG.exception(
+                        "Error: %s\nOn event:\n%s",
+                        exception,
+                        json.dumps(event),
                     )
-                    if not result.ok:
-                        LOG.warning(
-                            "Unable to create webhook %s on repository %s: %s",
-                            event["object"]["spec"]["url"],
-                            event["object"]["spec"]["repository"],
-                            result.text,
-                        )
-                    else:
-                        self.k8s_webhook[k8s_id] = gh_id
-                        if gh_id not in self.webhooks:
-                            self.webhooks[gh_id] = WebHook(result.json()["id"])
-                        self.webhooks[gh_id].objects.append(k8s_id)
-                        LOG.info(
-                            "Webhook %s on repository %s created",
-                            event["object"]["spec"]["url"],
-                            event["object"]["spec"]["repository"],
-                        )
-                        LOG.debug(result.text)
-                LOG.debug("Elapse time on the event %s", time.time() - start)
-
             LOG.error("The watch exited")
             sys.exit(1)
         except:
