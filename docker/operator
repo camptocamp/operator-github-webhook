@@ -35,7 +35,7 @@ def delete_webhook(url: str, repository: str, id_: int) -> None:
 class WebHook:
     def __init__(self, id_: int):
         self.id_ = id_
-        # List of Kubernetes namesapce, name
+        # List of Kubernetes namespace, name
         self.objects: List[Tuple[str, str]] = []
 
 
@@ -88,10 +88,18 @@ class Main:
                         event["object"]["spec"]["repository"],
                     )
 
-                    webhooks = requests.get(
+                    webhooks_response = requests.get(
                         f"https://api.github.com/repos/{event['object']['spec']['repository']}/hooks",
                         headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-                    ).json()
+                    )
+                    if not webhooks_response.ok:
+                        LOG.error(
+                            "Unable to get webhooks for repository %s:\n%s",
+                            event["object"]["spec"]["repository"],
+                            webhooks_response.text,
+                        )
+                        continue
+                    webhooks = webhooks_response.json()
 
                     if event["type"] == "DELETED":
                         delete_id = 0
@@ -172,8 +180,8 @@ class Main:
                             },
                         )
                         if not result.ok:
-                            LOG.warning(
-                                "Unable to create webhook %s on repository %s: %s",
+                            LOG.error(
+                                "Unable to create webhook %s on repository %s:\n%s",
                                 event["object"]["spec"]["url"],
                                 event["object"]["spec"]["repository"],
                                 result.text,
