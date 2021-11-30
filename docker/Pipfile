@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-kubernetes = "==19.15.0"
+kubernetes = "==20.13.0"
 requests = "==2.26.0"
 types-requests = "==2.26.1"
 
