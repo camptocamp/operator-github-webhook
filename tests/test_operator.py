@@ -15,7 +15,7 @@ LOG = logging.getLogger(__name__)
 @pytest.fixture
 def install_operator(scope="session"):
     # Create the operator
-    LOG.warning("Crerate operator: %s", datetime.datetime.now())
+    LOG.warning("Create operator: %s", datetime.datetime.now())
     with open("operator.yaml", "w") as operator_file:
         subprocess.run(
             [
@@ -23,6 +23,7 @@ def install_operator(scope="session"):
                 "template",
                 "test",
                 ".",
+                "--namespace=default",
                 f"--set=env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},env.LOGLEVEL=DEBUG",
             ],
             stdout=operator_file,
