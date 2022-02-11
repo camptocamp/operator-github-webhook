@@ -24,7 +24,7 @@ def install_operator(scope="session"):
                 "test",
                 ".",
                 "--namespace=default",
-                f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},env.LOGLEVEL=DEBUG",
+                f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},env.LOG_LEVEL=DEBUG",
             ],
             stdout=operator_file,
             check=True,
