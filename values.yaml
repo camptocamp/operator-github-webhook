@@ -6,13 +6,11 @@ replicaCount: 1
 
 env:
   GITHUB_TOKEN: required
-  LOGLEVEL: WARN
+  LOG_LEVEL: WARN
 
 image:
   repository: camptocamp/github-webhook-operator
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
 
 imagePullSecrets: []
 nameOverride: ''

@@ -7,7 +7,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ include "operator-github-webhook.serviceAccountName" . }}
-    namespace: default
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ include "operator-github-webhook.fullname" . }}
