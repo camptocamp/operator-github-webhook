@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+revisionHistoryLimit: 3
 
 env:
   GITHUB_TOKEN: required
