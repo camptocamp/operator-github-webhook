@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ae16899ba695dd098c0a9d4a07e2f9c9ef6c00f3cf8f7194bf4d69d2b32b58fb"
+            "sha256": "21dc201fbf6a407ea92e8b0209d515b0060b4b375cdf69f8ae7a4ecd7b6bd91d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -219,11 +219,11 @@
         },
         "websocket-client": {
             "hashes": [
-                "sha256:1315816c0acc508997eb3ae03b9d3ff619c9d12d544c9a9b553704b1cc4f6af5",
-                "sha256:2eed4cc58e4d65613ed6114af2f380f7910ff416fc8c46947f6e76b6815f56c0"
+                "sha256:074e2ed575e7c822fc0940d31c3ac9bb2b1142c303eafcf3e304e6ce035522e8",
+                "sha256:6278a75065395418283f887de7c3beafb3aa68dada5cacbe4b214e8d26da499b"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.2.3"
+            "version": "==1.3.1"
         }
     },
     "develop": {
@@ -237,10 +237,10 @@
         },
         "bandit": {
             "hashes": [
-                "sha256:6d11adea0214a43813887bfe71a377b5a9955e4c826c8ffd341b494e3ab25260",
-                "sha256:e20402cadfd126d85b68ed4c8862959663c8c372dbbb1fca8f8e2c9f55a067ec"
+                "sha256:3ce9b4e6a4f7f41aa966c9543e635dd35e52a793a47e746f0c55c7ecfc69d7e8",
+                "sha256:58772ca951bf1129dda8a280d351547de832720bf7b5c29fac3103927980b8a6"
             ],
-            "version": "==1.7.2"
+            "version": "==1.7.3"
         },
         "dodgy": {
             "hashes": [
@@ -399,11 +399,11 @@
                 "with_mypy"
             ],
             "hashes": [
-                "sha256:1ca0da95a2d1a151ae578f02d6fc78300a9150af8f2c2c201097213016cc92ee",
-                "sha256:fd5a2872b26ee07babc15b826c1ff4a717282a3dbb744591a59625a2c11a0468"
+                "sha256:1002046d6966262ee798980b16796ab5f675b2bceef0773ee86d8138c9284075",
+                "sha256:a02053b00fb5970e424598c91a02c6d515b5ceec72ea1bf4f26831514bedfaff"
             ],
             "index": "pypi",
-            "version": "==1.6.0"
+            "version": "==1.7.4"
         },
         "pycodestyle": {
             "hashes": [
