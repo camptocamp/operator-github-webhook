@@ -9,7 +9,7 @@ requests = "==2.27.1"
 types-requests = "==2.27.11"
 
 [dev-packages]
-prospector = {version = "==1.7.5", extras = ["with_bandit", "with_mypy"]}
+prospector = {version = "==1.7.6", extras = ["with_bandit", "with_mypy"]}
 flake8 = "==4.0.1"
 types-pyyaml = "==6.0.4"
 
