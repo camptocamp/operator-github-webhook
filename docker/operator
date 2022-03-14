@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple
 import kubernetes  # type: ignore
 import requests
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("GitHub Webhook operator")
 
 
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
