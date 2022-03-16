@@ -2,8 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  image:
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  revisionHistoryLimit: 3
+
 replicaCount: 1
-revisionHistoryLimit: 3
 
 env:
   GITHUB_TOKEN: required
@@ -11,9 +16,7 @@ env:
 
 image:
   repository: camptocamp/github-webhook-operator
-  pullPolicy: IfNotPresent
 
-imagePullSecrets: []
 nameOverride: ''
 fullnameOverride: ''
 
