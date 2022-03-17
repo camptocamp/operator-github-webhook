@@ -1,0 +1,6 @@
+image:
+  tag: latest
+
+args:
+  - --verbose
+  - --dev

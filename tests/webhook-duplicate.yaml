@@ -1,8 +1,0 @@
-apiVersion: camptocamp.com/v1
-kind: GitHubWebhook
-metadata:
-  name: test2
-spec:
-  repository: camptocamp/operator-github-webhook
-  url: https://example.com
-  contentType: json

@@ -14,6 +14,9 @@ LOG = logging.getLogger(__name__)
 
 @pytest.fixture
 def install_operator(scope="session"):
+    """Install the operator"""
+    del scope
+
     # Create the operator
     LOG.warning("Create operator: %s", datetime.datetime.now())
     with open("operator.yaml", "w") as operator_file:
@@ -62,20 +65,45 @@ AUTH_HEADER = "Bearer {}".format(
 )
 
 
-def test_operator(install_operator):
+def _assert_webhooks(nb: int, hook_type: str = None, url: str = None):
+    for _ in range(10):
+        webhooks = [
+            webhook
+            for webhook in requests.get(
+                "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
+                headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
+            ).json()
+            if webhook["config"]["url"].startswith("https://example.com")
+        ]
+        if (
+            len(webhooks) == nb
+            and all(wh["config"]["content_type"] == hook_type for wh in webhooks)
+            and all(wh["config"]["url"] == url for wh in webhooks)
+        ):
+            return
+        time.sleep(1)
+    assert len(webhooks) == nb
+    assert all(wh["config"]["content_type"] == hook_type for wh in webhooks), [
+        wh["config"]["content_type"] for wh in webhooks
+    ]
+    assert all(wh["config"]["url"] == url for wh in webhooks), [wh["config"]["url"] for wh in webhooks]
 
-    # Initialise the source and the config
+
+def test_operator(install_operator):
+    del install_operator
+
+    # Initialize the source and the config
     subprocess.run(["kubectl", "delete", "-f", "tests/webhook.yaml"])
     subprocess.run(["kubectl", "delete", "-f", "tests/webhook-duplicate.yaml"])
 
-    # Clean the olf webhook
+    # Clean the old webhook
     webhooks = requests.get(
         "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
         headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
     )
     webhooks.raise_for_status()
     for webhook in webhooks.json():
-        if webhook["config"]["url"] == "https://example.com":
+        if webhook["config"]["url"].startswith("https://example.com"):
             requests.delete(
                 f"https://api.github.com/repos/camptocamp/operator-github-webhook/hooks/{webhook['id']}",
                 headers={
@@ -83,94 +111,19 @@ def test_operator(install_operator):
                     "Authorization": AUTH_HEADER,
                 },
             )
-
-    for _ in range(10):
-        webhooks = [
-            wh
-            for wh in requests.get(
-                "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-                headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-            ).json()
-            if wh["config"]["url"] == "https://example.com"
-        ]
-        if len(webhooks) == 0:
-            break
-        else:
-            time.sleep(1)
-    assert len(webhooks) == 0
+    _assert_webhooks(0)
 
     # Test creation
     LOG.warning("Test creation: %s", datetime.datetime.now())
     subprocess.run(["kubectl", "apply", "-f", "tests/webhook.yaml"], check=True)
-    for _ in range(10):
-        webhooks = [
-            wh
-            for wh in requests.get(
-                "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-                headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-            ).json()
-            if wh["config"]["url"] == "https://example.com"
-        ]
-        if len(webhooks) == 1:
-            break
-        else:
-            time.sleep(1)
-    assert len(webhooks) == 1
-
-    # Test duplicate
-    LOG.warning("Test duplicate: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "apply", "-f", "tests/webhook-duplicate.yaml"], check=True)
-    time.sleep(4)
-    webhooks = [
-        wh
-        for wh in requests.get(
-            "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-            headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-        ).json()
-        if wh["config"]["url"] == "https://example.com"
-    ]
-    assert len(webhooks) == 1
-
-    # Test remove duplicate
-    LOG.warning("Test remove duplicate: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "delete", "-f", "tests/webhook-duplicate.yaml"], check=True)
-    time.sleep(4)
-    webhooks = [
-        wh
-        for wh in requests.get(
-            "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-            headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-        ).json()
-        if wh["config"]["url"] == "https://example.com"
-    ]
-    assert len(webhooks) == 1
+    _assert_webhooks(1, "json", "https://example.com")
 
     # Test modification
     LOG.warning("Test modification: %s", datetime.datetime.now())
     subprocess.run(["kubectl", "apply", "-f", "tests/webhook-form.yaml"], check=True)
-
-    time.sleep(4)
-    webhooks = [
-        wh
-        for wh in requests.get(
-            "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-            headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-        ).json()
-        if wh["config"]["url"] == "https://example.com"
-    ]
-    assert len(webhooks) == 1
+    _assert_webhooks(1, "form", "https://example.com")
 
     # Test remove
     LOG.warning("Test remove: %s", datetime.datetime.now())
     subprocess.run(["kubectl", "delete", "-f", "tests/webhook-form.yaml"], check=True)
-
-    time.sleep(4)
-    webhooks = [
-        wh
-        for wh in requests.get(
-            "https://api.github.com/repos/camptocamp/operator-github-webhook/hooks",
-            headers={"Accept": "application/vnd.github.v3+json", "Authorization": AUTH_HEADER},
-        ).json()
-        if wh["config"]["url"] == "https://example.com"
-    ]
-    assert len(webhooks) == 0
+    _assert_webhooks(0)

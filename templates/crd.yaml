@@ -26,6 +26,8 @@ spec:
               required:
                 - repository
                 - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
   scope: Namespaced
   names:
     plural: githubwebhooks
