@@ -11,7 +11,7 @@ types-requests = "==2.27.13"
 [dev-packages]
 prospector = {version = "==1.7.7", extras = ["with_bandit", "with_mypy"]}
 flake8 = "==4.0.1"
-types-pyyaml = "==6.0.4"
+types-pyyaml = "==6.0.5"
 
 [requires]
 python_version = "3.8"
