@@ -6,6 +6,12 @@ metadata:
     {{- include "operator-github-webhook.labels" . | nindent 4 }}
 rules:
   - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+  - apiGroups:
       - camptocamp.com
     resources:
       - githubwebhooks
@@ -13,3 +19,4 @@ rules:
       - get
       - list
       - watch
+      - patch
