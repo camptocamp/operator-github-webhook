@@ -1,28 +1,44 @@
-FROM ubuntu:20.04 as runtime
+# Base of all section, install the apt packages
+FROM ubuntu:20.04 as base-all
+LABEL maintainer "info@camptocamp.org"
 
-RUN apt-get update && \
-    apt-get --yes --no-install-recommends install python3-pip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    --mount=type=cache,target=/var/cache,sharing=locked \
+    apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+        python3-pip python3-wheel
 
-COPY requirements.txt /tmp/
-RUN python3 -m pip install --disable-pip-version-check --no-cache-dir --requirement=/tmp/requirements.txt
+# Used to convert the locked packages by poetry to pip requirements format
+FROM base-all as poetry
 
-COPY Pipfile Pipfile.lock /tmp/
-RUN cd /tmp && pipenv sync --system --clear && \
-    rm --recursive --force /root/.cache/*
+# Install poetry
+WORKDIR /tmp
+COPY requirements.txt ./
+RUN --mount=type=cache,target=/root/.cache \
+    python3 -m pip install --disable-pip-version-check --requirement=requirements.txt \
+    && rm requirements.txt
 
+# Do the conversion
+COPY poetry.lock pyproject.toml ./
+RUN poetry export --output=requirements.txt \
+    && poetry export --dev --output=requirements-dev.txt
 
-FROM runtime as test
+# Do the lint, used by the tests
+FROM base-all as test
 
-RUN cd /tmp && pipenv sync --system --clear --dev && \
-    rm --recursive --force /root/.cache/*
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
+    python3 -m pip install --disable-pip-version-check --requirement=/poetry/requirements-dev.txt
 
 WORKDIR /app
 COPY * ./
 
+# The image used to run the application
+FROM base-all as runtime
 
-FROM runtime as default
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
+    python3 -m pip install --disable-pip-version-check --requirement=/poetry/requirements.txt
 
 WORKDIR /app
 COPY operator.py ./

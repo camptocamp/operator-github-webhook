@@ -1,3 +1,4 @@
+export DOCKER_BUILDKIT=1
 
 .PHONY: build
 build:

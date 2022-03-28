@@ -3,6 +3,9 @@
 checks:
   required_workflows:
     codeql.yaml: False
+  codespell:
+    ignore_re:
+      - docker/poetry\.lock
 
 publish:
   docker:

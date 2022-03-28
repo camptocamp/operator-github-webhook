@@ -1,0 +1,15 @@
+[tool.poetry]
+name = 'operator-github-webhook'
+version = '0.0.0'
+description = 'Not used'
+authors = []
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+kopf = "==1.*"
+requests = "==2.*"
+
+[tool.poetry.dev-dependencies]
+prospector = {version = "==1.*", extras = ["with_bandit", "with_mypy"]}
+types-requests = "==2.*"
+types-pyyaml = "==6.*"
