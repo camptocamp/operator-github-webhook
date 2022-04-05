@@ -14,14 +14,14 @@ AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
 
 
 @kopf.on.startup()
-def _startup(settings: kopf.OperatorSettings, logger: kopf._core.actions.execution.Logger, **_) -> None:
+def _startup(settings: kopf.OperatorSettings, logger: kopf._cogs.helpers.typedefs.Logger, **_) -> None:
     settings.posting.level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
     logger.info("GitHub WebHook creator started")
     logger.debug("Start date: %s", datetime.datetime.now())
 
 
 def create_webhook(
-    spec: kopf._cogs.structs.bodies.Spec, logger: kopf._core.actions.execution.Logger
+    spec: kopf._cogs.structs.bodies.Spec, logger: kopf._cogs.helpers.typedefs.Logger
 ) -> Dict[str, Any]:
     webhooks_response = requests.get(
         f"https://api.github.com/repos/{spec['repository']}/hooks",
@@ -69,7 +69,7 @@ def create_webhook(
     return {"ghId": result.json()["id"]}
 
 
-def delete_webhook(url: str, repository: str, id_: int, logger: kopf._core.actions.execution.Logger) -> None:
+def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpers.typedefs.Logger) -> None:
     result = requests.delete(
         f"https://api.github.com/repos/{repository}/hooks/{id_}",
         headers={
@@ -89,7 +89,7 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._core.actio
 async def _create(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
-    logger: kopf._core.actions.execution.Logger,
+    logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> Dict[str, Any]:
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
@@ -102,7 +102,7 @@ async def _delete(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     status: kopf._cogs.structs.bodies.Status,
-    logger: kopf._core.actions.execution.Logger,
+    logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> None:
     my_status = _get_status(status)
@@ -118,7 +118,7 @@ async def _update(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     status: kopf._cogs.structs.bodies.Status,
-    logger: kopf._core.actions.execution.Logger,
+    logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> Dict[str, Any]:
     my_status = _get_status(status)
