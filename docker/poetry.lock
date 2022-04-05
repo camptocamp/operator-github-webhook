@@ -226,7 +226,7 @@ plugins = ["setuptools"]
 
 [[package]]
 name = "kopf"
-version = "1.35.3"
+version = "1.35.4"
 description = "Kubernetes Operator Pythonic Framework (Kopf)"
 category = "main"
 optional = false
@@ -843,8 +843,8 @@ isort = [
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
 ]
 kopf = [
-    {file = "kopf-1.35.3-py3-none-any.whl", hash = "sha256:cff46d874d087d3a86b7ad9ce2e75a0312d9e7a334964d69cc1a63a3fe0e15c8"},
-    {file = "kopf-1.35.3.tar.gz", hash = "sha256:3f5d945549902a46e86a99eee604f9efc561af75ac9666eee462ed0319eccc06"},
+    {file = "kopf-1.35.4-py3-none-any.whl", hash = "sha256:852c4a3bb303962e85e1a077f0bd5e889295f98fdc58a1b8721938d2a65faae6"},
+    {file = "kopf-1.35.4.tar.gz", hash = "sha256:0fbf5c7ef70b3fbbffc8efbcd5d13a736db8b8ddbab6bd680a9128529b57bdaf"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.7.1.tar.gz", hash = "sha256:d609c75b986def706743cdebe5e47553f4a5a1da9c5ff66d76013ef396b5a8a4"},
