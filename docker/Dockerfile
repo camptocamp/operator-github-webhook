@@ -1,5 +1,5 @@
 # Base of all section, install the apt packages
-FROM ubuntu:20.04 as base-all
+FROM ubuntu:22.04 as base-all
 LABEL maintainer "info@camptocamp.org"
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
