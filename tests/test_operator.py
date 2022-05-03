@@ -94,7 +94,6 @@ def test_operator(install_operator):
 
     # Initialize the source and the config
     subprocess.run(["kubectl", "delete", "-f", "tests/webhook.yaml"])
-    subprocess.run(["kubectl", "delete", "-f", "tests/webhook-duplicate.yaml"])
 
     # Clean the old webhook
     webhooks = requests.get(
