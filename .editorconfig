@@ -13,5 +13,5 @@ quote_type = single
 [Makefile]
 indent_style = tab
 
-[*.{yaml,md,json}]
+[*.{yaml,md,json,json5}]
 indent_size = 2
