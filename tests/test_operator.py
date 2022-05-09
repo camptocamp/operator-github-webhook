@@ -19,7 +19,7 @@ def install_operator(scope="session"):
 
     # Create the operator
     LOG.warning("Create operator: %s", datetime.datetime.now())
-    with open("operator.yaml", "w") as operator_file:
+    with open("operator.yaml", "w", encoding="utf-8") as operator_file:
         subprocess.run(
             [
                 "helm",
@@ -27,7 +27,8 @@ def install_operator(scope="session"):
                 "test",
                 ".",
                 "--namespace=default",
-                f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},env.LOG_LEVEL=DEBUG",
+                f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},"
+                "env.LOG_LEVEL=DEBUG,env.ENVIRONMENT=test",
             ],
             stdout=operator_file,
             check=True,

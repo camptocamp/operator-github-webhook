@@ -11,6 +11,7 @@ import kopf._core.actions.execution
 import requests
 
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
+ENVIRONMENT: str = os.environ["ENVIRONMENT"]
 
 
 @kopf.on.startup()
@@ -84,20 +85,22 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpe
         logger.debug(result.text)
 
 
-@kopf.on.resume("camptocamp.com", "v1", "githubwebhooks")
-@kopf.on.create("camptocamp.com", "v1", "githubwebhooks")
+@kopf.on.resume("camptocamp.com", "v2", "githubwebhooks")
+@kopf.on.create("camptocamp.com", "v2", "githubwebhooks")
 async def _create(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> Dict[str, Any]:
+    if spec["environment"] != ENVIRONMENT:
+        return {}
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
 
     return create_webhook(spec, logger)
 
 
-@kopf.on.delete("camptocamp.com", "v1", "githubwebhooks")
+@kopf.on.delete("camptocamp.com", "v2", "githubwebhooks")
 async def _delete(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
@@ -105,6 +108,8 @@ async def _delete(
     logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> None:
+    if spec["environment"] != ENVIRONMENT:
+        return
     my_status = _get_status(status)
     logger.info(
         "Delete, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), my_status
@@ -113,7 +118,7 @@ async def _delete(
         delete_webhook(spec["url"], spec["repository"], my_status["ghId"], logger)
 
 
-@kopf.on.update("camptocamp.com", "v1", "githubwebhooks")
+@kopf.on.update("camptocamp.com", "v2", "githubwebhooks")
 async def _update(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
@@ -121,6 +126,8 @@ async def _update(
     logger: kopf._cogs.helpers.typedefs.Logger,
     **_,
 ) -> Dict[str, Any]:
+    if spec["environment"] != ENVIRONMENT:
+        return {}
     my_status = _get_status(status)
     logger.info(
         "Update, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), my_status
