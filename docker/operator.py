@@ -17,6 +17,10 @@ ENVIRONMENT: str = os.environ["ENVIRONMENT"]
 @kopf.on.startup()
 def _startup(settings: kopf.OperatorSettings, logger: kopf._cogs.helpers.typedefs.Logger, **_) -> None:
     settings.posting.level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
+    if "KOPF_SERVER_TIMEOUT" in os.environ:
+        settings.watching.server_timeout = int(os.environ["KOPF_SERVER_TIMEOUT"])
+    if "KOPF_CLIENT_TIMEOUT" in os.environ:
+        settings.watching.client_timeout = int(os.environ["KOPF_CLIENT_TIMEOUT"])
     logger.info("GitHub WebHook creator started")
     logger.debug("Start date: %s", datetime.datetime.now())
 
