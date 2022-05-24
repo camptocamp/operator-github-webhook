@@ -43,8 +43,9 @@ spec:
           {{- range .Values.args }}
             - {{ . }}
           {{- end }}
-          {{- end }}
+          {{- else }}
             - operator.py
+          {{- end }}
           terminationMessagePolicy: FallbackToLogsOnError
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
