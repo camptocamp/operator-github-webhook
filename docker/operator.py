@@ -15,7 +15,7 @@ ENVIRONMENT: str = os.environ["ENVIRONMENT"]
 
 
 @kopf.on.startup()
-def _startup(settings: kopf.OperatorSettings, logger: kopf._cogs.helpers.typedefs.Logger, **_) -> None:
+def startup(settings: kopf.OperatorSettings, logger: kopf._cogs.helpers.typedefs.Logger, **_) -> None:
     settings.posting.level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
     if "KOPF_SERVER_TIMEOUT" in os.environ:
         settings.watching.server_timeout = int(os.environ["KOPF_SERVER_TIMEOUT"])
@@ -92,7 +92,7 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpe
 
 @kopf.on.resume("camptocamp.com", "v2", "githubwebhooks")
 @kopf.on.create("camptocamp.com", "v2", "githubwebhooks")
-async def _create(
+async def create(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     logger: kopf._cogs.helpers.typedefs.Logger,
@@ -106,7 +106,7 @@ async def _create(
 
 
 @kopf.on.delete("camptocamp.com", "v2", "githubwebhooks")
-async def _delete(
+async def delete(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     status: kopf._cogs.structs.bodies.Status,
@@ -124,7 +124,7 @@ async def _delete(
 
 
 @kopf.on.update("camptocamp.com", "v2", "githubwebhooks")
-async def _update(
+async def update(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
     status: kopf._cogs.structs.bodies.Status,
@@ -143,7 +143,7 @@ async def _update(
 
 
 def _get_status(status: kopf._cogs.structs.bodies.Status) -> Dict[str, Any]:
-    for key in ["_update", "_create"]:
+    for key in ["update", "create"]:
         if key in status:
             return status[key]
     return {}
