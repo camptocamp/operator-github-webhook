@@ -83,7 +83,7 @@ def _assert_webhooks(nb: int, hook_type: str = None, url: str = None):
         ):
             return
         time.sleep(1)
-    assert len(webhooks) == nb
+    assert len(webhooks) == nb, "The webhooks didn't match: \n" + yaml.dump(webhooks)
     assert all(wh["config"]["content_type"] == hook_type for wh in webhooks), [
         wh["config"]["content_type"] for wh in webhooks
     ]
