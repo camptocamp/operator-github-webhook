@@ -44,7 +44,7 @@ spec:
             - {{ . }}
           {{- end }}
           {{- else }}
-            - operator.py
+            - operator_.py
           {{- end }}
           terminationMessagePolicy: FallbackToLogsOnError
           securityContext:

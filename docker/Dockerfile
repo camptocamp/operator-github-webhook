@@ -1,5 +1,5 @@
 # Base of all section, install the apt packages
-FROM ubuntu:20.04 as base-all
+FROM ubuntu:22.04 as base-all
 LABEL maintainer "info@camptocamp.org"
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
@@ -41,5 +41,5 @@ RUN --mount=type=cache,target=/root/.cache \
     python3 -m pip install --disable-pip-version-check --requirement=/poetry/requirements.txt
 
 WORKDIR /app
-COPY operator.py ./
-CMD ["kopf", "run", "operator.py"]
+COPY operator_.py ./
+CMD ["kopf", "run", "operator_.py"]
