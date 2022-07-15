@@ -66,7 +66,7 @@ AUTH_HEADER = "Bearer {}".format(
 )
 
 
-def _assert_webhooks(nb: int, hook_type: str = None, url: str = None):
+def _assert_webhooks(nb: int, hook_type: str = None, url: str = None, secret: str = None):
     for _ in range(10):
         webhooks = [
             webhook
@@ -80,6 +80,7 @@ def _assert_webhooks(nb: int, hook_type: str = None, url: str = None):
             len(webhooks) == nb
             and all(wh["config"]["content_type"] == hook_type for wh in webhooks)
             and all(wh["config"]["url"] == url for wh in webhooks)
+            and all(wh["config"]["secret"] == secret for wh in webhooks)
         ):
             return
         time.sleep(1)
@@ -116,12 +117,12 @@ def test_operator(install_operator):
     # Test creation
     LOG.warning("Test creation: %s", datetime.datetime.now())
     subprocess.run(["kubectl", "apply", "-f", "tests/webhook.yaml"], check=True)
-    _assert_webhooks(1, "json", "https://example.com")
+    _assert_webhooks(1, "json", "https://example.com", "my-secret")
 
     # Test modification
     LOG.warning("Test modification: %s", datetime.datetime.now())
     subprocess.run(["kubectl", "apply", "-f", "tests/webhook-form.yaml"], check=True)
-    _assert_webhooks(1, "form", "https://example.com")
+    _assert_webhooks(1, "form", "https://example.com", "my-secret")
 
     # Test remove
     LOG.warning("Test remove: %s", datetime.datetime.now())

@@ -44,8 +44,10 @@ def create_webhook(
     webhooks = webhooks_response.json()
 
     for webhook in webhooks:
-        if webhook["config"]["url"] == spec["url"] and webhook["config"]["content_type"] == spec.get(
-            "contentType", "json"
+        if (
+            webhook["config"]["url"] == spec["url"]
+            and webhook["config"]["content_type"] == spec.get("contentType", "json")
+            and webhook["config"]["secret"] == spec["secret"]
         ):
             return {"ghId": webhook["id"]}
 
@@ -59,6 +61,7 @@ def create_webhook(
             "config": {
                 "content_type": spec.get("contentType", "json"),
                 "url": spec["url"],
+                "secret": spec["secret"],
             }
         },
     )
@@ -90,8 +93,8 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpe
         logger.debug(result.text)
 
 
-@kopf.on.resume("camptocamp.com", "v2", "githubwebhooks")
-@kopf.on.create("camptocamp.com", "v2", "githubwebhooks")
+@kopf.on.resume("camptocamp.com", "v3", "githubwebhooks")
+@kopf.on.create("camptocamp.com", "v3", "githubwebhooks")
 async def create(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
@@ -105,7 +108,7 @@ async def create(
     return create_webhook(spec, logger)
 
 
-@kopf.on.delete("camptocamp.com", "v2", "githubwebhooks")
+@kopf.on.delete("camptocamp.com", "v3", "githubwebhooks")
 async def delete(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,
@@ -123,7 +126,7 @@ async def delete(
         delete_webhook(spec["url"], spec["repository"], my_status["ghId"], logger)
 
 
-@kopf.on.update("camptocamp.com", "v2", "githubwebhooks")
+@kopf.on.update("camptocamp.com", "v3", "githubwebhooks")
 async def update(
     meta: kopf._cogs.structs.bodies.Meta,
     spec: kopf._cogs.structs.bodies.Spec,

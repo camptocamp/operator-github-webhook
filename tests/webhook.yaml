@@ -1,4 +1,4 @@
-apiVersion: camptocamp.com/v2
+apiVersion: camptocamp.com/v3
 kind: GitHubWebhook
 metadata:
   name: test1
@@ -7,3 +7,4 @@ spec:
   repository: camptocamp/operator-github-webhook
   url: https://example.com
   contentType: json
+  secret: my-secret

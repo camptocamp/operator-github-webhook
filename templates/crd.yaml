@@ -8,9 +8,35 @@ metadata:
 spec:
   group: camptocamp.com
   versions:
-    - name: v2
+    - name: v3
       served: true
       storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                environment:
+                  type: string
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+                secret:
+                  type: string
+              required:
+                - environment
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+    - name: v2
+      served: true
+      storage: false
       schema:
         openAPIV3Schema:
           type: object
