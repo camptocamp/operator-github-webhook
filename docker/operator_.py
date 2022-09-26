@@ -12,6 +12,7 @@ import requests
 
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
 ENVIRONMENT: str = os.environ["ENVIRONMENT"]
+TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
 
 
 @kopf.on.startup()
@@ -34,6 +35,7 @@ def create_webhook(
             "Accept": "application/vnd.github.v3+json",
             "Authorization": AUTH_HEADER,
         },
+        timeout=TIMEOUT,
     )
     logger.debug("Get WebHooks:\n%s", webhooks_response.text)
     if not webhooks_response.ok:
@@ -64,6 +66,7 @@ def create_webhook(
                 "secret": spec["secret"],
             }
         },
+        timeout=TIMEOUT,
     )
     logger.debug("Create WebHook:\n%s", result.text)
     if not result.ok:
@@ -85,6 +88,7 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpe
             "Accept": "application/vnd.github.v3+json",
             "Authorization": AUTH_HEADER,
         },
+        timeout=TIMEOUT,
     )
     if not result.ok:
         logger.warning("Unable to delete webhook %s on repository %s: %s", url, repository, result.text)
