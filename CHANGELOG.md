@@ -244,7 +244,7 @@
 
 ## [0.1.0](https://github.com/camptocamp/operator-github-webhook/tree/0.1.0) (2021-08-17)
 
-[Full Changelog](https://github.com/camptocamp/operator-github-webhook/compare/e1e1dff8ed00b8bc20eb49876e31c30d825fecc6...0.1.0)
+[Full Changelog](https://github.com/camptocamp/operator-github-webhook/compare/b5ce57097179492cfc65192f8529f43454119a9e...0.1.0)
 
 #### :sparkles: Enhancements
 
