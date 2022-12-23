@@ -6,8 +6,6 @@ import os
 from typing import Any, Dict
 
 import kopf
-import kopf._cogs.structs.bodies
-import kopf._core.actions.execution
 import requests
 
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
@@ -16,19 +14,17 @@ TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
 
 
 @kopf.on.startup()
-def startup(settings: kopf.OperatorSettings, logger: kopf._cogs.helpers.typedefs.Logger, **_) -> None:
+def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_) -> None:
     settings.posting.level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
     if "KOPF_SERVER_TIMEOUT" in os.environ:
         settings.watching.server_timeout = int(os.environ["KOPF_SERVER_TIMEOUT"])
     if "KOPF_CLIENT_TIMEOUT" in os.environ:
         settings.watching.client_timeout = int(os.environ["KOPF_CLIENT_TIMEOUT"])
-    logger.info("GitHub WebHook creator started")
+    logger.info("GitHub WebHook creator started in environment %s", ENVIRONMENT)
     logger.debug("Start date: %s", datetime.datetime.now())
 
 
-def create_webhook(
-    spec: kopf._cogs.structs.bodies.Spec, logger: kopf._cogs.helpers.typedefs.Logger
-) -> Dict[str, Any]:
+def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> Dict[str, Any]:
     webhooks_response = requests.get(
         f"https://api.github.com/repos/{spec['repository']}/hooks",
         headers={
@@ -37,7 +33,7 @@ def create_webhook(
         },
         timeout=TIMEOUT,
     )
-    logger.debug("Get WebHooks:\n%s", webhooks_response.text)
+    logger.debug("Get WebHooks: %s", webhooks_response.text)
     if not webhooks_response.ok:
         raise kopf.TemporaryError(
             f"Unable to get webhooks for repository {spec['repository']}:\n{webhooks_response.text}",
@@ -68,7 +64,7 @@ def create_webhook(
         },
         timeout=TIMEOUT,
     )
-    logger.debug("Create WebHook:\n%s", result.text)
+    logger.debug("Create WebHook: %s", result.text)
     if not result.ok:
         raise kopf.TemporaryError(
             f"Unable to create webhook {spec['url']} on repository {spec['repository']}:\n%{result.text}",
@@ -81,7 +77,7 @@ def create_webhook(
     return {"ghId": result.json()["id"]}
 
 
-def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpers.typedefs.Logger) -> None:
+def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> None:
     result = requests.delete(
         f"https://api.github.com/repos/{repository}/hooks/{id_}",
         headers={
@@ -97,31 +93,16 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf._cogs.helpe
         logger.debug(result.text)
 
 
-@kopf.on.resume("camptocamp.com", "v3", "githubwebhooks")
-@kopf.on.create("camptocamp.com", "v3", "githubwebhooks")
-async def create(
-    meta: kopf._cogs.structs.bodies.Meta,
-    spec: kopf._cogs.structs.bodies.Spec,
-    logger: kopf._cogs.helpers.typedefs.Logger,
-    **_,
-) -> Dict[str, Any]:
-    if spec["environment"] != ENVIRONMENT:
-        return {}
+@kopf.on.resume("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
+@kopf.on.create("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
+async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> Dict[str, Any]:
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
 
     return create_webhook(spec, logger)
 
 
-@kopf.on.delete("camptocamp.com", "v3", "githubwebhooks")
-async def delete(
-    meta: kopf._cogs.structs.bodies.Meta,
-    spec: kopf._cogs.structs.bodies.Spec,
-    status: kopf._cogs.structs.bodies.Status,
-    logger: kopf._cogs.helpers.typedefs.Logger,
-    **_,
-) -> None:
-    if spec["environment"] != ENVIRONMENT:
-        return
+@kopf.on.delete("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
+async def delete(meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_) -> None:
     my_status = _get_status(status)
     logger.info(
         "Delete, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), my_status
@@ -130,16 +111,10 @@ async def delete(
         delete_webhook(spec["url"], spec["repository"], my_status["ghId"], logger)
 
 
-@kopf.on.update("camptocamp.com", "v3", "githubwebhooks")
+@kopf.on.update("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
 async def update(
-    meta: kopf._cogs.structs.bodies.Meta,
-    spec: kopf._cogs.structs.bodies.Spec,
-    status: kopf._cogs.structs.bodies.Status,
-    logger: kopf._cogs.helpers.typedefs.Logger,
-    **_,
+    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_
 ) -> Dict[str, Any]:
-    if spec["environment"] != ENVIRONMENT:
-        return {}
     my_status = _get_status(status)
     logger.info(
         "Update, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), my_status
@@ -149,8 +124,8 @@ async def update(
     return create_webhook(spec, logger)
 
 
-def _get_status(status: kopf._cogs.structs.bodies.Status) -> Dict[str, Any]:
-    for key in ["update", "create"]:
+def _get_status(status: kopf.Status) -> Dict[str, Any]:
+    for key in ["update", "update/spec.environment", "create", "create/spec.environment"]:
         if key in status:
             return status[key]
     return {}
