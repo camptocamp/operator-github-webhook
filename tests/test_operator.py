@@ -27,13 +27,14 @@ def install_operator(scope="session"):
                 "test",
                 ".",
                 "--namespace=default",
+                '--set-json=args=["--debug"]',
                 f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},"
                 "env.LOG_LEVEL=DEBUG,env.ENVIRONMENT=test",
             ],
             stdout=operator_file,
             check=True,
         )
-    subprocess.run(["kubectl", "apply", "-f", "operator.yaml"], check=True)
+    subprocess.run(["kubectl", "apply", "--filename=operator.yaml"], check=True)
 
     pods = []
     success = False
@@ -55,7 +56,7 @@ def install_operator(scope="session"):
 
     yield
     # We should have the pod to be able to extract the logs
-    # subprocess.run(["kubectl", "delete", "-f", "operator.yaml"], check=True)
+    # subprocess.run(["kubectl", "delete", "--filename=operator.yaml"], check=True)
     os.remove("operator.yaml")
 
 
@@ -95,7 +96,7 @@ def test_operator(install_operator):
     del install_operator
 
     # Initialize the source and the config
-    subprocess.run(["kubectl", "delete", "-f", "tests/webhook.yaml"])
+    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"])
 
     # Clean the old webhook
     webhooks = requests.get(
@@ -116,15 +117,16 @@ def test_operator(install_operator):
 
     # Test creation
     LOG.warning("Test creation: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "apply", "-f", "tests/webhook.yaml"], check=True)
+    subprocess.run(["kubectl", "apply", "--filename=tests/webhook.yaml"], check=True)
     _assert_webhooks(1, "json", "https://example.com", "my-secret")
 
     # Test modification
     LOG.warning("Test modification: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "apply", "-f", "tests/webhook-form.yaml"], check=True)
+    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"], check=True)
+    subprocess.run(["kubectl", "apply", "--filename=tests/webhook-form.yaml"], check=True)
     _assert_webhooks(1, "form", "https://example.com", "my-secret")
 
     # Test remove
     LOG.warning("Test remove: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "delete", "-f", "tests/webhook-form.yaml"], check=True)
+    subprocess.run(["kubectl", "delete", "--filename=tests/webhook-form.yaml"], check=True)
     _assert_webhooks(0)
