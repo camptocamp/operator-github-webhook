@@ -49,6 +49,10 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> Dict[str, Any]:
         ):
             return {"ghId": webhook["id"]}
 
+    for webhook in webhooks:
+        if webhook["config"]["url"] == spec["url"]:
+            delete_webhook(spec["url"], spec["repository"], webhook["id"], logger)
+
     result = requests.post(
         f"https://api.github.com/repos/{spec['repository']}/hooks",
         headers={
