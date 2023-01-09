@@ -29,22 +29,9 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          command:
-          {{- if .Values.command }}
-          {{- range .Values.command }}
-            - {{ . }}
-          {{- end }}
-          {{- else }}
-            - kopf
-            - run
-          {{- end }}
+          {{- with .Values.args }}
           args:
-          {{- if .Values.args }}
-          {{- range .Values.args }}
-            - {{ . }}
-          {{- end }}
-          {{- else }}
-            - operator_.py
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           terminationMessagePolicy: FallbackToLogsOnError
           securityContext:

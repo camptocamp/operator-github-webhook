@@ -41,4 +41,4 @@ RUN --mount=type=cache,target=/root/.cache \
 
 WORKDIR /app
 COPY operator_.py ./
-CMD ["kopf", "run", "operator_.py"]
+ENTRYPOINT ["kopf", "run", "operator_.py"]
