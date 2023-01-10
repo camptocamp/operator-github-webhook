@@ -41,4 +41,4 @@ RUN --mount=type=cache,target=/root/.cache \
 
 WORKDIR /app
 COPY operator_.py ./
-ENTRYPOINT ["kopf", "run", "operator_.py"]
+ENTRYPOINT ["kopf", "run", "--liveness=http://0.0.0.0:8080/healthz", "operator_.py"]
