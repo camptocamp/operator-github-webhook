@@ -21,7 +21,11 @@ image:
 nameOverride: ''
 fullnameOverride: ''
 
-crd: true
+crd:
+  enabled: true
+  suffix: ''
+  shortSuffix: ''
+
 clusterrole: true
 clusterrolebinding: true
 deployment: true

@@ -1,16 +1,40 @@
-{{- if .Values.crd }}
+{{- if .Values.crd.enabled }}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: githubwebhooks.camptocamp.com
+  name: githubwebhooks{{ .Values.crd.suffix }}.camptocamp.com
   labels:
     {{- include "operator-github-webhook.labels" . | nindent 4 }}
 spec:
   group: camptocamp.com
   versions:
-    - name: v3
+    - name: v4
       served: true
       storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+                secret:
+                  type: string
+              required:
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+    - name: v3
+      served: true
+      storage: false
+      deprecated: true
       schema:
         openAPIV3Schema:
           type: object
@@ -83,10 +107,9 @@ spec:
               x-kubernetes-preserve-unknown-fields: true
   scope: Namespaced
   names:
-    plural: githubwebhooks
-    singular: githubwebhook
-    kind: GitHubWebhook
+    plural: githubwebhooks{{ .Values.crd.suffix }}
+    singular: githubwebhook{{ .Values.crd.suffix }}
+    kind: GitHubWebhook{{ .Values.crd.suffix | title }}
     shortNames:
-      - ghwh
-      - ghw
+      - ghwh{{ .Values.crd.shortSuffix }}
 {{- end }}

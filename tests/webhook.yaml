@@ -1,9 +1,8 @@
-apiVersion: camptocamp.com/v3
-kind: GitHubWebhook
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookTest
 metadata:
   name: test1
 spec:
-  environment: test
   repository: camptocamp/operator-github-webhook
   url: https://example.com
   contentType: json

@@ -29,7 +29,7 @@ def install_operator(scope="session"):
                 "--namespace=default",
                 '--set-json=args=["--debug"]',
                 f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},"
-                "env.LOG_LEVEL=DEBUG,env.ENVIRONMENT=test",
+                "env.LOG_LEVEL=DEBUG,env.ENVIRONMENT=test,crd.suffix=test,crd.shortSuffix=t",
             ],
             stdout=operator_file,
             check=True,
@@ -46,7 +46,10 @@ def install_operator(scope="session"):
         )
         if (
             len(pods["items"]) == 1
-            and len([c for c in pods["items"][0]["status"]["conditions"] if c["status"] != "True"]) == 0
+            and len(
+                [c for c in pods["items"][0].get("status", {}).get("conditions", {}) if c["status"] != "True"]
+            )
+            == 0
         ):
             success = True
             break
@@ -122,7 +125,6 @@ def test_operator(install_operator):
 
     # Test modification
     LOG.warning("Test modification: %s", datetime.datetime.now())
-    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"], check=True)
     subprocess.run(["kubectl", "apply", "--filename=tests/webhook-form.yaml"], check=True)
     _assert_webhooks(1, "form", "https://example.com", "my-secret")
 
