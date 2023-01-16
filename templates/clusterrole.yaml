@@ -15,7 +15,7 @@ rules:
   - apiGroups:
       - camptocamp.com
     resources:
-      - githubwebhooks
+      - githubwebhooks{{ .Values.crd.suffix }}
     verbs:
       - get
       - list

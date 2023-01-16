@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
 
 import datetime
+import hashlib
 import logging
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import kopf
 import requests
 
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
-ENVIRONMENT: str = os.environ["ENVIRONMENT"]
+ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "")
 TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
+
+
+def _hash(spec: kopf.Spec) -> str:
+    return hashlib.md5(
+        f"{spec['repository']}:{spec['url']}:{spec['contentType']}:{spec['secret']}".encode()
+    ).hexdigest()
 
 
 @kopf.on.startup()
@@ -78,7 +85,7 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> Dict[str, Any]:
         spec["url"],
         spec["repository"],
     )
-    return {"ghId": result.json()["id"]}
+    return {"ghId": result.json()["id"], "hash": _hash(spec)}
 
 
 def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> None:
@@ -97,24 +104,40 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> 
         logger.debug(result.text)
 
 
-@kopf.on.resume("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
-@kopf.on.create("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
+@kopf.on.create("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> Dict[str, Any]:
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
 
     return create_webhook(spec, logger)
 
 
-@kopf.on.delete("camptocamp.com", "v3", "githubwebhooks", field="spec.environment", value=ENVIRONMENT)
+def get_status(status: kopf.Status) -> Dict[str, Any]:
+    for name in ("update", "create"):
+        if name in status:
+            return status[name]
+    return {}
+
+
+@kopf.on.resume("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
+@kopf.on.update("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
+async def update(
+    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_
+) -> Optional[Dict[str, Any]]:
+    logger.info("Update or resume, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
+    last_status = get_status(status)
+    if "ghId" in last_status:
+        if last_status["hash"] == _hash(spec):
+            return last_status
+        delete_webhook(spec["url"], spec["repository"], last_status["ghId"], logger)
+
+    return create_webhook(spec, logger)
+
+
+@kopf.on.delete("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def delete(meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_) -> None:
     logger.info(
         "Delete, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), status
     )
-    create_status = status.get("create/spec.environment", {})
-    if "ghId" in create_status:
-        delete_webhook(spec["url"], spec["repository"], create_status["ghId"], logger)
-
-
-@kopf.on.update("camptocamp.com", "v3", "githubwebhooks")
-async def update(**_) -> Dict[str, Any]:
-    raise kopf.PermanentError("The object cannot be changed.")
+    last_status = get_status(status)
+    if "ghId" in last_status:
+        delete_webhook(spec["url"], spec["repository"], last_status["ghId"], logger)
