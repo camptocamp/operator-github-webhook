@@ -12,3 +12,12 @@ helm install my-release operator-github-webhook
 ## Example
 
 With the following [k8s object](./tests/webhook.yaml) to create a webhook on this repository.
+
+## Contributing
+
+Install the pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install --allow-missing-config
+```
