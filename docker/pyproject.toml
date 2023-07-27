@@ -11,5 +11,5 @@ requests = "2.31.0"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.2", extras = ["with_bandit", "with_mypy"] }
-types-requests = "2.31.0.1"
-types-pyyaml = "6.0.12.10"
+types-requests = "2.31.0.2"
+types-pyyaml = "6.0.12.11"
