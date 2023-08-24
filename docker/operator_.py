@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import kopf
 import requests
@@ -31,7 +31,7 @@ def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_) -> None:
     logger.debug("Start date: %s", datetime.datetime.now())
 
 
-def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> Dict[str, Any]:
+def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
     webhooks_response = requests.get(
         f"https://api.github.com/repos/{spec['repository']}/hooks",
         headers={
@@ -98,20 +98,25 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> 
         timeout=TIMEOUT,
     )
     if not result.ok:
-        logger.warning("Unable to delete webhook %s on repository %s: %s", url, repository, result.text)
+        logger.warning(
+            "Unable to delete webhook %s on repository %s: %s",
+            url,
+            repository,
+            result.text,
+        )
     else:
         logger.info("Webhook %s on repository %s deleted", url, repository)
         logger.debug(result.text)
 
 
 @kopf.on.create("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
-async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> Dict[str, Any]:
+async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> dict[str, Any]:
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
 
     return create_webhook(spec, logger)
 
 
-def get_status(status: kopf.Status) -> Dict[str, Any]:
+def get_status(status: kopf.Status) -> dict[str, Any]:
     for name in ("update", "create"):
         if name in status:
             return status[name]
@@ -122,8 +127,12 @@ def get_status(status: kopf.Status) -> Dict[str, Any]:
 @kopf.on.update("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def update(
     meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_
-) -> Optional[Dict[str, Any]]:
-    logger.info("Update or resume, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
+) -> Optional[dict[str, Any]]:
+    logger.info(
+        "Update or resume, Name: %s, Namespace: %s",
+        meta.get("name"),
+        meta.get("namespace"),
+    )
     last_status = get_status(status)
     if "ghId" in last_status:
         if last_status["hash"] == _hash(spec):
@@ -136,7 +145,10 @@ async def update(
 @kopf.on.delete("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def delete(meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_) -> None:
     logger.info(
-        "Delete, Name: %s, Namespace: %s, Status: %s", meta.get("name"), meta.get("namespace"), status
+        "Delete, Name: %s, Namespace: %s, Status: %s",
+        meta.get("name"),
+        meta.get("namespace"),
+        status,
     )
     last_status = get_status(status)
     if "ghId" in last_status:
