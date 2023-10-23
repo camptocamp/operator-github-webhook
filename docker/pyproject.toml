@@ -8,7 +8,7 @@ authors = []
 python = ">=3.10,<3.11"
 kopf = "1.36.2"
 requests = "2.31.0"
-urllib3 = "2.0.6"
+urllib3 = "2.0.7"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.2", extras = ["with_bandit", "with_mypy"] }
