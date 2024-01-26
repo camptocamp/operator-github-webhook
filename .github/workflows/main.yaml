@@ -18,11 +18,11 @@ env:
 
 jobs:
   main:
-    runs-on: ubuntu-22.04
     name: Continuous integration
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
-    concurrency: main # to avoid parallel tests
+    concurrency: main
 
     steps:
       - run: docker system prune --all --force
@@ -92,7 +92,7 @@ jobs:
                 console.log('Trigger changelog');
                 await github.rest.repos.createDispatchEvent({
                     owner: 'camptocamp',
-                    repo: 'helm-mutualize',
+                    repo: 'operator-github-webhook',
                     event_type: 'changelog',
                 });
             }
