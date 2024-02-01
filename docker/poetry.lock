@@ -525,17 +525,17 @@ colors = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "kopf"
-version = "1.36.2"
+version = "1.37.1"
 description = "Kubernetes Operator Pythonic Framework (Kopf)"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "kopf-1.36.2-py3-none-any.whl", hash = "sha256:bb5e63f9e2092d22abe28c0b43ababe36d216d8efa3411a36ffb40223dd55a44"},
-    {file = "kopf-1.36.2.tar.gz", hash = "sha256:801e84671145fd19d2a2fcbc4a934ae8f6cd3bca966fc437099f815f7ab11e84"},
+    {file = "kopf-1.37.1-py3-none-any.whl", hash = "sha256:dbeafe715987705d6fb44a49a26ca065b9e537a85c654efa94a520c6d16509d5"},
+    {file = "kopf-1.37.1.tar.gz", hash = "sha256:f38829cb702d788ab536ecd51f10d83175b971874af1d6c8178a864cf9af4ece"},
 ]
 
 [package.dependencies]
-aiohttp = "<4.0.0"
+aiohttp = "*"
 click = "*"
 iso8601 = "*"
 python-json-logger = "*"
@@ -545,7 +545,7 @@ typing-extensions = "*"
 [package.extras]
 dev = ["certbuilder", "certvalidator", "oscrypto", "pyngrok"]
 full-auth = ["kubernetes", "pykube-ng"]
-uvloop = ["uvloop"]
+uvloop = ["uvloop", "uvloop (>=0.18.0)"]
 
 [[package]]
 name = "lazy-object-proxy"
@@ -1271,17 +1271,18 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.1.0"
+version = "2.2.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.1.0-py3-none-any.whl", hash = "sha256:55901e917a5896a349ff771be919f8bd99aff50b79fe58fec595eb37bbc56bb3"},
-    {file = "urllib3-2.1.0.tar.gz", hash = "sha256:df7aa8afb0148fa78488e7899b2c59b5f4ffcfa82e6c54ccb9dd37c1d7b52d54"},
+    {file = "urllib3-2.2.0-py3-none-any.whl", hash = "sha256:ce3711610ddce217e6d113a2732fafad960a03fd0318c91faa79481e35c11224"},
+    {file = "urllib3-2.2.0.tar.gz", hash = "sha256:051d961ad0c62a94e50ecf1af379c3aba230c66c710493493560c0c223c49f20"},
 ]
 
 [package.extras]
 brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
+h2 = ["h2 (>=4,<5)"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
@@ -1470,4 +1471,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "53b6d9892ef658147931fbf6ab3d74a5fdd1899c73fe936a9ec8196c161eea95"
+content-hash = "ef990d94a7ab5a7cb0121eb190c197c79d85a2a6d97c8cbd6bdafc060ce4cd4c"
