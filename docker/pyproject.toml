@@ -8,10 +8,10 @@ authors = []
 python = ">=3.10,<3.11"
 kopf = "1.37.1"
 requests = "2.31.0"
-urllib3 = "2.2.0"
+urllib3 = "2.2.1"
 aiohttp = "3.9.3"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
-types-requests = "2.31.0.20240125"
+types-requests = "2.31.0.20240218"
 types-pyyaml = "6.0.12.12"
