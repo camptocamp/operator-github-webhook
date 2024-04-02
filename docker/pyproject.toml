@@ -13,5 +13,5 @@ aiohttp = "3.9.3"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
-types-requests = "2.31.0.20240218"
-types-pyyaml = "6.0.12.12"
+types-requests = "2.31.0.20240402"
+types-pyyaml = "6.0.12.20240311"
