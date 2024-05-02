@@ -565,7 +565,10 @@ files = [
 ]
 
 [package.dependencies]
-aiohttp = "*"
+aiohttp = [
+    {version = ">=3.9.0", markers = "python_version >= \"3.12\""},
+    {version = "*", markers = "python_version < \"3.12\""},
+]
 click = "*"
 iso8601 = "*"
 python-json-logger = "*"
@@ -945,7 +948,11 @@ files = [
 [package.dependencies]
 astroid = ">=3.3.4,<=3.4.0-dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
-dill = {version = ">=0.2", markers = "python_version < \"3.11\""}
+dill = [
+    {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
+    {version = ">=0.2", markers = "python_version < \"3.11\""},
+    {version = ">=0.3.6", markers = "python_version >= \"3.11\" and python_version < \"3.12\""},
+]
 isort = ">=4.2.5,<5.13.0 || >5.13.0,<6"
 mccabe = ">=0.6,<0.8"
 platformdirs = ">=2.2.0"
@@ -1401,5 +1408,5 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<3.11"
-content-hash = "604f9f8aeb78ea20dcd376c4fe44c8d7e91a84c29374c059ade25fd1edd085c8"
+python-versions = ">=3.10,<3.13"
+content-hash = "5bfc2a90804bbb0b0d777aa0b2e3e06b01c1562d638541aa4a0606eb2181ef06"

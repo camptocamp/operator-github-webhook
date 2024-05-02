@@ -5,7 +5,7 @@ description = 'Not used'
 authors = []
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.13"
 kopf = "1.37.2"
 requests = "2.32.3"
 urllib3 = { version = "2.2.3", optional = true }
