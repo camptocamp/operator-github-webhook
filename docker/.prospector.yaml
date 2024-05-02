@@ -1,22 +1,8 @@
----
-strictness: veryhigh
+inherits:
+  - duplicated
+  - utils:base
+  - utils:fix
+  - utils:no-design-checks
 
-max-line-length: 110
-
-pycodestyle:
-  disable:
-    - E722
-
-pylint:
-  disable:
-    - too-few-public-methods
-    - too-many-nested-blocks
-    - too-many-branches
-    - too-many-statements
-    - bare-except
-
-mypy:
-  run: true
-
-mccabe:
+pyroma:
   run: false
