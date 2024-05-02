@@ -1,3 +1,13 @@
+[tool.mypy]
+python_version = "3.12"
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+strict_optional = true
+strict = true
+
 [tool.poetry]
 name = 'operator-github-webhook'
 version = '0.0.0'
@@ -15,5 +25,7 @@ certifi = "2024.8.30"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.12.0", extras = ["with_bandit", "with_mypy"] }
+prospector-profile-duplicated = "1.6.0"
+prospector-profile-utils  = "1.8.0"
 types-requests = "2.32.0.20240914"
 types-pyyaml = "6.0.12.20240917"
