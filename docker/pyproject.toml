@@ -7,12 +7,12 @@ authors = []
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
 kopf = "1.37.2"
-requests = "2.32.0"
+requests = "2.32.3"
 urllib3 = "2.2.1"
 aiohttp = "3.9.5"
 idna = "3.7"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
-types-requests = "2.32.0.20240523"
+types-requests = "2.32.0.20240602"
 types-pyyaml = "6.0.12.20240311"
