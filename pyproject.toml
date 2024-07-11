@@ -1,3 +1,9 @@
 [tool.black]
 line-length = 110
 target-version = ["py39"]
+
+[tool.poetry]
+name = "operator-github-webhook"
+version = "0.0.0"
+description = "Kubernetes Operator used to create a GitHub webhook"
+authors = ["Camptocamp <info@camptocamp.com>"]
