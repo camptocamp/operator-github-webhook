@@ -11,6 +11,7 @@ requests = "2.32.3"
 urllib3 = { version = "2.2.2", optional = true }
 aiohttp = { version = "3.9.5", optional = true }
 idna = { version = "3.7", optional = true }
+certifi = "2024.7.4"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
