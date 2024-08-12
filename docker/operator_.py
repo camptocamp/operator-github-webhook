@@ -16,7 +16,7 @@ TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
 
 def _hash(spec: kopf.Spec) -> str:
     secret = spec.get("secret", os.environ.get("GITHUB_WEBHOOK_SECRET"))
-    return hashlib.md5(
+    return hashlib.sha256(
         f"{spec['repository']}:{spec['url']}:{spec['contentType']}:{secret}".encode()
     ).hexdigest()
 
