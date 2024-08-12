@@ -15,8 +15,9 @@ TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
 
 
 def _hash(spec: kopf.Spec) -> str:
+    secret = spec.get("secret", os.environ.get("GITHUB_WEBHOOK_SECRET"))
     return hashlib.md5(
-        f"{spec['repository']}:{spec['url']}:{spec['contentType']}:{spec['secret']}".encode()
+        f"{spec['repository']}:{spec['url']}:{spec['contentType']}:{secret}".encode()
     ).hexdigest()
 
 
@@ -52,7 +53,7 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
         if (
             webhook["config"]["url"] == spec["url"]
             and webhook["config"]["content_type"] == spec.get("contentType", "json")
-            and webhook["config"]["secret"] == spec["secret"]
+            and webhook["config"]["secret"] == spec.get("secret", os.environ.get("GITHUB_WEBHOOK_SECRET"))
         ):
             return {"ghId": webhook["id"]}
 
@@ -70,7 +71,7 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
             "config": {
                 "content_type": spec.get("contentType", "json"),
                 "url": spec["url"],
-                "secret": spec["secret"],
+                "secret": spec.get("secret", os.environ.get("GITHUB_WEBHOOK_SECRET")),
             }
         },
         timeout=TIMEOUT,
