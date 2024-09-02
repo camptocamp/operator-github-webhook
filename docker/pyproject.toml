@@ -10,8 +10,8 @@ kopf = "1.37.2"
 requests = "2.32.3"
 urllib3 = { version = "2.2.2", optional = true }
 aiohttp = "3.10.5"
-idna = { version = "3.7", optional = true }
-certifi = "2024.7.4"
+idna = { version = "3.8", optional = true }
+certifi = "2024.8.30"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
