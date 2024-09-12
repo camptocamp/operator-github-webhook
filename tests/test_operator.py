@@ -27,9 +27,16 @@ def install_operator(scope="session"):
                 "test",
                 ".",
                 "--namespace=default",
-                '--set-json=args=["--debug"]',
-                f"--set=image.tag=latest,env.GITHUB_TOKEN={os.environ['GITHUB_TOKEN']},"
-                "env.LOG_LEVEL=DEBUG,env.ENVIRONMENT=test,crd.suffix=test,crd.shortSuffix=t",
+                "--set-json=args=" + json.dumps(["--debug"]),
+                "--set-json=env="
+                + json.dumps(
+                    [
+                        {"name": "GITHUB_TOKEN", "value": os.environ["GITHUB_TOKEN"]},
+                        {"name": "LOG_LEVEL", "value": "DEBUG"},
+                        {"name": "ENVIRONMENT", "value": "test"},
+                    ]
+                ),
+                "--set=image.tag=latest,crd.suffix=test,crd.shortSuffix=t",
             ],
             stdout=operator_file,
             check=True,

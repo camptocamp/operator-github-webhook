@@ -4,3 +4,12 @@ image:
 args:
   - --verbose
   - --dev
+
+env:
+  - name: VALUE
+    value: 'value'
+  - name: SECRET
+    valueFrom:
+      secretKeyRef:
+        key: SECRET
+        name: secret

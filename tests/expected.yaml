@@ -1,0 +1,236 @@
+---
+# Source: operator-github-webhook/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: github-webhook
+  labels:
+    helm.sh/chart: operator-github-webhook-0.1.0
+    app.kubernetes.io/name: operator-github-webhook
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: operator-github-webhook/templates/crd.yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: githubwebhooks.camptocamp.com
+  labels:
+    helm.sh/chart: operator-github-webhook-0.1.0
+    app.kubernetes.io/name: operator-github-webhook
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  group: camptocamp.com
+  versions:
+    - name: v4
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+                secret:
+                  type: string
+              required:
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+    - name: v3
+      served: true
+      storage: false
+      deprecated: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                environment:
+                  type: string
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+                secret:
+                  type: string
+              required:
+                - environment
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+    - name: v2
+      served: true
+      storage: false
+      deprecated: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                environment:
+                  type: string
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+              required:
+                - environment
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+    - name: v1
+      served: true
+      storage: false
+      deprecated: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                repository:
+                  type: string
+                url:
+                  type: string
+                contentType:
+                  type: string
+              required:
+                - repository
+                - url
+            status:
+              x-kubernetes-preserve-unknown-fields: true
+  scope: Namespaced
+  names:
+    plural: githubwebhooks
+    singular: githubwebhook
+    kind: GitHubWebhook
+    shortNames:
+      - ghwh
+---
+# Source: operator-github-webhook/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: test-operator-github-webhook
+  labels:
+    helm.sh/chart: operator-github-webhook-0.1.0
+    app.kubernetes.io/name: operator-github-webhook
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+  - apiGroups:
+      - camptocamp.com
+    resources:
+      - githubwebhooks
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+---
+# Source: operator-github-webhook/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: test-operator-github-webhook
+  labels:
+    helm.sh/chart: operator-github-webhook-0.1.0
+    app.kubernetes.io/name: operator-github-webhook
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+subjects:
+  - kind: ServiceAccount
+    name: github-webhook
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: test-operator-github-webhook
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: operator-github-webhook/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-operator-github-webhook
+  labels:
+    helm.sh/chart: operator-github-webhook-0.1.0
+    app.kubernetes.io/name: operator-github-webhook
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: operator-github-webhook
+      app.kubernetes.io/instance: test
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: operator-github-webhook
+        app.kubernetes.io/instance: test
+    spec:
+      serviceAccountName: github-webhook
+      securityContext:
+        {}
+      containers:
+        - name: operator-github-webhook
+          args:
+            - --verbose
+            - --dev
+          terminationMessagePolicy: FallbackToLogsOnError
+          securityContext:
+            {}
+          image: "camptocamp/github-webhook-operator:latest"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+            - name: VALUE
+              value: value
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: SECRET
+                  name: secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
