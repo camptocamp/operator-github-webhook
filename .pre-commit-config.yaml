@@ -54,6 +54,7 @@ repos:
         exclude: |-
           (?x)(
             \.prettierignore
+            |tests/expected\.yaml
           )$
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
@@ -106,3 +107,19 @@ repos:
     hooks:
       - id: jsonschema-validator
         files: ^ci/config\.yaml$
+  - repo: https://github.com/camptocamp/helm-common
+    rev: 2.0.1
+    hooks:
+      - id: helm-template-gen
+        files: |-
+          (?x)(
+            ^templates/.*$
+            |^values\.yaml$
+            |^Chart\.yaml$
+            |^tests/values\.yaml$
+          )
+        args:
+          - --values=tests/values.yaml
+          - test
+          - .
+          - tests/expected.yaml
