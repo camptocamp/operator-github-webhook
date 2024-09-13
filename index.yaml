@@ -3,6 +3,16 @@ entries:
   operator-github-webhook:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-09-13T07:00:09.872099952Z"
+    description: A Helm chart for Kubernetes
+    digest: adde015dcaf4974394559d68f4df3ff02bad02a9998fb3bf734ee6482e677052
+    name: operator-github-webhook
+    type: application
+    urls:
+    - https://github.com/camptocamp/operator-github-webhook/releases/download/1.0.0/operator-github-webhook-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-08-12T16:07:33.629596196Z"
     description: A Helm chart for Kubernetes
     digest: 8b031f7668862a45c2b210ec6301d3c500cf639f15ed5256cb79d34d5ef073fb
@@ -161,4 +171,4 @@ entries:
     urls:
     - https://github.com/camptocamp/operator-github-webhook/releases/download/0.1.1/operator-github-webhook-0.1.1.tgz
     version: 0.1.1
-generated: "2024-08-12T16:07:33.629706413Z"
+generated: "2024-09-13T07:00:09.872214146Z"
