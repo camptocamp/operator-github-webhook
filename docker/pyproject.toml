@@ -10,7 +10,7 @@ kopf = "1.37.2"
 requests = "2.32.3"
 urllib3 = { version = "2.2.3", optional = true }
 aiohttp = "3.10.8"
-idna = { version = "3.8", optional = true }
+idna = { version = "3.10", optional = true }
 certifi = "2024.8.30"
 
 [tool.poetry.dev-dependencies]
