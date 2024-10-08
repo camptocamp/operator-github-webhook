@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import logging
 import os
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 import kopf
 import requests
@@ -22,7 +22,7 @@ def _hash(spec: kopf.Spec) -> str:
 
 
 @kopf.on.startup()
-def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_) -> None:
+def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_: Any) -> None:
     settings.posting.level = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
     if "KOPF_SERVER_TIMEOUT" in os.environ:
         settings.watching.server_timeout = int(os.environ["KOPF_SERVER_TIMEOUT"])
@@ -111,7 +111,7 @@ def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> 
 
 
 @kopf.on.create("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
-async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> dict[str, Any]:
+async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_: Any) -> dict[str, Any]:
     logger.info("Create, Name: %s, Namespace: %s", meta.get("name"), meta.get("namespace"))
 
     return create_webhook(spec, logger)
@@ -120,14 +120,14 @@ async def create(meta: kopf.Meta, spec: kopf.Spec, logger: kopf.Logger, **_) -> 
 def get_status(status: kopf.Status) -> dict[str, Any]:
     for name in ("update", "create"):
         if name in status:
-            return status[name]
+            return cast(dict[str, Any], status[name])
     return {}
 
 
 @kopf.on.resume("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 @kopf.on.update("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def update(
-    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_
+    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_: Any
 ) -> Optional[dict[str, Any]]:
     logger.info(
         "Update or resume, Name: %s, Namespace: %s",
@@ -144,7 +144,9 @@ async def update(
 
 
 @kopf.on.delete("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
-async def delete(meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_) -> None:
+async def delete(
+    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_: Any
+) -> None:
     logger.info(
         "Delete, Name: %s, Namespace: %s, Status: %s",
         meta.get("name"),
