@@ -14,6 +14,6 @@ idna = { version = "3.10", optional = true }
 certifi = "2024.8.30"
 
 [tool.poetry.dev-dependencies]
-prospector = { version = "1.10.3", extras = ["with_bandit", "with_mypy"] }
+prospector = { version = "1.12.0", extras = ["with_bandit", "with_mypy"] }
 types-requests = "2.32.0.20240914"
 types-pyyaml = "6.0.12.20240917"
