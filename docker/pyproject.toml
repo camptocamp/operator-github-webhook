@@ -19,13 +19,13 @@ python = ">=3.10,<3.13"
 kopf = "1.37.2"
 requests = "2.32.3"
 urllib3 = { version = "2.2.3", optional = true }
-aiohttp = "3.10.8"
+aiohttp = "3.10.10"
 idna = { version = "3.10", optional = true }
 certifi = "2024.8.30"
 
 [tool.poetry.dev-dependencies]
-prospector = { version = "1.12.0", extras = ["with_bandit", "with_mypy"] }
+prospector = { version = "1.12.1", extras = ["with_bandit", "with_mypy"] }
 prospector-profile-duplicated = "1.6.0"
 prospector-profile-utils  = "1.9.1"
-types-requests = "2.32.0.20240914"
+types-requests = "2.32.0.20241016"
 types-pyyaml = "6.0.12.20240917"
