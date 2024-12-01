@@ -16,7 +16,7 @@ authors = []
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-kopf = "1.37.2"
+kopf = "1.37.3"
 requests = "2.32.3"
 urllib3 = { version = "2.2.3", optional = true }
 aiohttp = "3.10.11"
