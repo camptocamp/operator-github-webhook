@@ -18,14 +18,14 @@ authors = []
 python = ">=3.10,<3.13"
 kopf = "1.37.4"
 requests = "2.32.3"
-urllib3 = { version = "2.2.3", optional = true }
+urllib3 = { version = "2.3.0", optional = true }
 aiohttp = "3.11.11"
 idna = { version = "3.10", optional = true }
-certifi = "2024.8.30"
+certifi = "2024.12.14"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.13.3", extras = ["with_bandit", "with_mypy", "with_ruff"] }
-prospector-profile-duplicated = "1.8.1"
-prospector-profile-utils  = "1.13.0"
+prospector-profile-duplicated = "1.10.0"
+prospector-profile-utils  = "1.14.1"
 types-requests = "2.32.0.20241016"
 types-pyyaml = "6.0.12.20241230"
