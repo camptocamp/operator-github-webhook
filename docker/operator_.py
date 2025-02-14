@@ -132,7 +132,11 @@ def get_status(status: kopf.Status) -> dict[str, Any]:
 @kopf.on.resume("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 @kopf.on.update("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def update(
-    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_: Any,
+    meta: kopf.Meta,
+    spec: kopf.Spec,
+    status: kopf.Status,
+    logger: kopf.Logger,
+    **_: Any,
 ) -> Optional[dict[str, Any]]:
     """Manage the update or resume of the webhook."""
     logger.info(
@@ -151,7 +155,11 @@ async def update(
 
 @kopf.on.delete("camptocamp.com", "v4", f"githubwebhooks{ENVIRONMENT}")
 async def delete(
-    meta: kopf.Meta, spec: kopf.Spec, status: kopf.Status, logger: kopf.Logger, **_: Any,
+    meta: kopf.Meta,
+    spec: kopf.Spec,
+    status: kopf.Status,
+    logger: kopf.Logger,
+    **_: Any,
 ) -> None:
     """Manage the deletion of the webhook."""
     logger.info(

@@ -48,13 +48,19 @@ def install_operator(scope="session"):
     for _ in range(100):
         pods = json.loads(
             subprocess.run(
-                ["kubectl", "get", "pods", "--output=json"], check=True, stdout=subprocess.PIPE,
+                ["kubectl", "get", "pods", "--output=json"],
+                check=True,
+                stdout=subprocess.PIPE,
             ).stdout,
         )
         if (
             len(pods["items"]) == 1
             and len(
-                [c for c in pods["items"][0].get("status", {}).get("conditions", {}) if c["status"] != "True"],
+                [
+                    c
+                    for c in pods["items"][0].get("status", {}).get("conditions", {})
+                    if c["status"] != "True"
+                ],
             )
             == 0
         ):
