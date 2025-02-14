@@ -34,7 +34,7 @@ def install_operator(scope="session"):
                         {"name": "GITHUB_TOKEN", "value": os.environ["GITHUB_TOKEN"]},
                         {"name": "LOG_LEVEL", "value": "DEBUG"},
                         {"name": "ENVIRONMENT", "value": "test"},
-                    ]
+                    ],
                 ),
                 "--set=image.tag=latest,crd.suffix=test,crd.shortSuffix=t",
             ],
@@ -48,13 +48,19 @@ def install_operator(scope="session"):
     for _ in range(100):
         pods = json.loads(
             subprocess.run(
-                ["kubectl", "get", "pods", "--output=json"], check=True, stdout=subprocess.PIPE
-            ).stdout
+                ["kubectl", "get", "pods", "--output=json"],
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout,
         )
         if (
             len(pods["items"]) == 1
             and len(
-                [c for c in pods["items"][0].get("status", {}).get("conditions", {}) if c["status"] != "True"]
+                [
+                    c
+                    for c in pods["items"][0].get("status", {}).get("conditions", {})
+                    if c["status"] != "True"
+                ],
             )
             == 0
         ):
@@ -73,7 +79,7 @@ def install_operator(scope="session"):
 AUTH_HEADER = "Bearer {}".format(
     os.environ["GITHUB_TOKEN"]
     if "GITHUB_TOKEN" in os.environ
-    else subprocess.check_output(["gopass", "gs/ci/github/token/gopass"]).strip().decode()
+    else subprocess.check_output(["gopass", "gs/ci/github/token/gopass"]).strip().decode(),
 )
 
 
@@ -106,7 +112,7 @@ def test_operator(install_operator):
     del install_operator
 
     # Initialize the source and the config
-    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"])
+    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"], check=False)
 
     # Clean the old webhook
     webhooks = requests.get(
