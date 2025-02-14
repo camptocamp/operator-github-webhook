@@ -30,7 +30,7 @@ def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_: Any) -> N
     if "KOPF_CLIENT_TIMEOUT" in os.environ:
         settings.watching.client_timeout = int(os.environ["KOPF_CLIENT_TIMEOUT"])
     logger.info("GitHub WebHook creator started")
-    logger.debug("Start date: %s", datetime.datetime.now())
+    logger.debug("Start date: %s", datetime.datetime.now(datetime.UTC))
 
 
 def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
@@ -45,10 +45,8 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
     )
     logger.debug("Get WebHooks:\n%s", webhooks_response.text)
     if not webhooks_response.ok:
-        raise kopf.TemporaryError(
-            f"Unable to get webhooks for repository {spec['repository']}:\n{webhooks_response.text}",
-            delay=60,
-        )
+        message = f"Unable to get webhooks for repository {spec['repository']}:\n{webhooks_response.text}"
+        raise kopf.TemporaryError(message, delay=60)
     webhooks = webhooks_response.json()
 
     for webhook in webhooks:
@@ -80,9 +78,10 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
     )
     logger.debug("Create WebHook:\n%s", result.text)
     if not result.ok:
-        raise kopf.TemporaryError(
+        message = (
             f"Unable to create webhook {spec['url']} on repository {spec['repository']}:\n%{result.text}",
         )
+        raise kopf.TemporaryError(message)
     logger.info(
         "Webhook %s on repository %s created",
         spec["url"],
