@@ -19,55 +19,61 @@ def install_operator(scope="session"):
 
     # Create the operator
     LOG.warning("Create operator: %s", datetime.datetime.now())
-    with open("operator.yaml", "w", encoding="utf-8") as operator_file:
-        subprocess.run(
-            [
-                "helm",
-                "template",
-                "test",
-                ".",
-                "--namespace=default",
-                "--set-json=args=" + json.dumps(["--debug"]),
-                "--set-json=env="
-                + json.dumps(
-                    [
-                        {"name": "GITHUB_TOKEN", "value": os.environ["GITHUB_TOKEN"]},
-                        {"name": "LOG_LEVEL", "value": "DEBUG"},
-                        {"name": "ENVIRONMENT", "value": "test"},
-                    ]
-                ),
-                "--set=image.tag=latest,crd.suffix=test,crd.shortSuffix=t",
-            ],
-            stdout=operator_file,
-            check=True,
-        )
-    subprocess.run(["kubectl", "apply", "--filename=operator.yaml"], check=True)
-
-    pods = []
-    success = False
-    for _ in range(100):
-        pods = json.loads(
+    try:
+        with open("operator.yaml", "w", encoding="utf-8") as operator_file:
             subprocess.run(
-                ["kubectl", "get", "pods", "--output=json"], check=True, stdout=subprocess.PIPE
-            ).stdout
-        )
-        if (
-            len(pods["items"]) == 1
-            and len(
-                [c for c in pods["items"][0].get("status", {}).get("conditions", {}) if c["status"] != "True"]
+                [
+                    "helm",
+                    "template",
+                    "test",
+                    ".",
+                    "--namespace=default",
+                    "--set-json=args=" + json.dumps(["--debug"]),
+                    "--set-json=env="
+                    + json.dumps(
+                        [
+                            {"name": "GITHUB_TOKEN", "value": os.environ["GITHUB_TOKEN"]},
+                            {"name": "LOG_LEVEL", "value": "DEBUG"},
+                            {"name": "ENVIRONMENT", "value": "test"},
+                        ]
+                    ),
+                    "--set=image.tag=latest,crd.suffix=test,crd.shortSuffix=t",
+                ],
+                stdout=operator_file,
+                check=True,
             )
-            == 0
-        ):
-            success = True
-            break
-        time.sleep(1)
-    assert success, "The operator didn't run correctly: \n" + yaml.dump(pods)
-    LOG.warning("Operator created: %s", datetime.datetime.now())
+        subprocess.run(["kubectl", "apply", "--filename=operator.yaml"], check=True)
 
-    yield
-    # We should have the pod to be able to extract the logs
-    # subprocess.run(["kubectl", "delete", "--filename=operator.yaml"], check=True)
-    os.remove("operator.yaml")
+        pods = []
+        success = False
+        for _ in range(100):
+            pods = json.loads(
+                subprocess.run(
+                    ["kubectl", "get", "pods", "--output=json"], check=True, stdout=subprocess.PIPE
+                ).stdout
+            )
+            if (
+                len(pods["items"]) == 1
+                and len(
+                    [
+                        c
+                        for c in pods["items"][0].get("status", {}).get("conditions", {})
+                        if c["status"] != "True"
+                    ]
+                )
+                == 0
+            ):
+                success = True
+                break
+            time.sleep(1)
+        assert success, "The operator didn't run correctly: \n" + yaml.dump(pods)
+        LOG.warning("Operator created: %s", datetime.datetime.now())
+
+        yield
+    finally:
+        # We should have the pod to be able to extract the logs
+        # subprocess.run(["kubectl", "delete", "--filename=operator.yaml"], check=True)
+        os.remove("operator.yaml")
 
 
 AUTH_HEADER = "Bearer {}".format(
