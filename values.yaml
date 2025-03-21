@@ -16,7 +16,7 @@ env:
   LOG_LEVEL: WARN
 
 image:
-  repository: camptocamp/github-webhook-operator
+  repository: ghcr.io/camptocamp/github-webhook-operator
 
 nameOverride: ''
 fullnameOverride: ''
