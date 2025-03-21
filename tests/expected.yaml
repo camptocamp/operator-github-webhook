@@ -220,7 +220,7 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           securityContext:
             {}
-          image: "camptocamp/github-webhook-operator:latest"
+          image: "ghcr.io/camptocamp/github-webhook-operator:latest"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
