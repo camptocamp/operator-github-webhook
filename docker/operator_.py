@@ -124,7 +124,7 @@ def get_status(status: kopf.Status) -> dict[str, Any]:
     """Get the status of the webhook."""
     for name in ("update", "create"):
         if name in status:
-            return cast(dict[str, Any], status[name])
+            return cast("dict[str, Any]", status[name])
     return {}
 
 
