@@ -21,7 +21,7 @@ repos:
       - id: copyright
       - id: poetry-lock
         additional_dependencies:
-          - poetry==2.1.1 # pypi
+          - poetry==2.1.2 # pypi
         exclude: ^pyproject.toml$
       - id: helm-lock
   - repo: https://github.com/codespell-project/codespell
@@ -34,9 +34,9 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.5.2 # npm
-          - prettier-plugin-sh@0.15.0 # npm
-          - prettier-plugin-toml@2.0.2 # npm
+          - prettier@3.5.3 # npm
+          - prettier-plugin-sh@0.16.0 # npm
+          - prettier-plugin-toml@2.0.3 # npm
           - '@prettier/plugin-xml@0.12.0' # npm
         exclude: |-
           (?x)(
@@ -52,7 +52,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.2
+    rev: 0.32.1
     hooks:
       - id: check-github-actions
       - id: check-github-workflows
@@ -65,11 +65,11 @@ repos:
           - --builtin-schema
           - github-workflows-require-timeout
   - repo: https://github.com/sirwart/ripsecrets
-    rev: v0.1.8
+    rev: v0.1.9
     hooks:
       - id: ripsecrets
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.11.2
     hooks:
       - id: ruff-format
         args:
@@ -85,7 +85,7 @@ repos:
         additional_dependencies:
           - prospector-profile-duplicated==1.10.5 # pypi
           - prospector-profile-utils==1.22.3 # pypi
-          - ruff==0.9.9 # pypi
+          - ruff==0.11.2 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 1.0.0
     hooks:
@@ -112,6 +112,6 @@ repos:
           - .
           - tests/expected.yaml
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 39.182.3
+    rev: 39.227.2
     hooks:
       - id: renovate-config-validator
