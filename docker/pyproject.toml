@@ -19,14 +19,14 @@ python = ">=3.10,<3.13"
 kopf = "1.38.0"
 requests = "2.32.4"
 urllib3 = "2.5.0"
-aiohttp = "3.12.6"
+aiohttp = "3.12.13"
 idna = { version = "3.10", optional = true }
-certifi = "2025.4.26"
+certifi = "2025.6.15"
 python-json-logger = "3.3.0"
 
 [tool.poetry.dev-dependencies]
 prospector = { version = "1.17.2", extras = ["with_bandit", "with_mypy", "with_ruff"] }
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils  = "1.23.0"
-types-requests = "2.32.0.20250515"
+types-requests = "2.32.4.20250611"
 types-pyyaml = "6.0.12.20250516"
