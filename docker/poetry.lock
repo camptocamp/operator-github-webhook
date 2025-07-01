@@ -616,8 +616,8 @@ files = [
 
 [package.dependencies]
 aiohttp = [
+    {version = "*"},
     {version = ">=3.9.0", markers = "python_version >= \"3.12\""},
-    {version = "*", markers = "python_version < \"3.12\""},
 ]
 click = "*"
 iso8601 = "*"
@@ -1105,14 +1105,14 @@ prospector = ">=1.15.0"
 
 [[package]]
 name = "prospector-profile-utils"
-version = "1.23.0"
+version = "1.25.0"
 description = "Some utility Prospector profiles."
 optional = false
 python-versions = "*"
 groups = ["dev"]
 files = [
-    {file = "prospector_profile_utils-1.23.0-py2.py3-none-any.whl", hash = "sha256:c2cb6d2b7b94608391ad61764720500a7dc00e705f3f5d794c83922588a05b2e"},
-    {file = "prospector_profile_utils-1.23.0.tar.gz", hash = "sha256:efb7d0487d5ae999df6ad65100c21251dcca7050326f2dd3d09d6ca7a9769770"},
+    {file = "prospector_profile_utils-1.25.0-py2.py3-none-any.whl", hash = "sha256:79e3a329c945e0e509a7a259f12336f83eadd75f47478af794efe8e62861cf1b"},
+    {file = "prospector_profile_utils-1.25.0.tar.gz", hash = "sha256:054f1a0d8dbe0a6817b9753cd29a74baa3062e1d24260241cf53ffd831505fa9"},
 ]
 
 [package.dependencies]
@@ -1191,9 +1191,9 @@ files = [
 astroid = ">=3.3.8,<=3.4.0.dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = [
-    {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
     {version = ">=0.2", markers = "python_version < \"3.11\""},
-    {version = ">=0.3.6", markers = "python_version >= \"3.11\""},
+    {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
+    {version = ">=0.3.6", markers = "python_version == \"3.11\""},
 ]
 isort = ">=4.2.5,<5.13 || >5.13,<7"
 mccabe = ">=0.6,<0.8"
@@ -1755,4 +1755,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "55cc9c9067c3bb8de7238eaf22868916fe36f4b37bd02c5aae75e743d0363430"
+content-hash = "add10959a718950db3e6cfd0eb6724365d4f78ed4a5053d31c03e28bfb34b405"
