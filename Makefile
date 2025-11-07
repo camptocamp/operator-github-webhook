@@ -11,7 +11,7 @@ build-test:
 
 .PHONY: prospector
 prospector: build-test
-	docker run --rm camptocamp/github-webhook-operator-test prospector --output=pylint operator_.py
+	docker run --rm camptocamp/github-webhook-operator-test prospector --die-on-tool-error --output=pylint operator_.py
 
 .PHONY: tests
 tests:

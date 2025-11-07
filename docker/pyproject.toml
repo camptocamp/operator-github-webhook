@@ -19,14 +19,8 @@ disallow_untyped_defs = true
 strict_optional = true
 strict = true
 
-[tool.poetry]
-name = 'operator-github-webhook'
-version = '0.0.0'
-description = 'Not used'
-authors = []
-
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.12,<3.15"
 kopf = "1.38.0"
 requests = "2.32.5"
 urllib3 = "2.5.0"
@@ -35,9 +29,16 @@ idna = { version = "3.11", optional = true }
 certifi = "2025.10.5"
 python-json-logger = "3.3.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 prospector = { version = "1.17.3", extras = ["with_bandit", "with_mypy", "with_ruff"] }
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils  = "1.26.5"
 types-requests = "2.32.4.20250913"
 types-pyyaml = "6.0.12.20250915"
+
+[project]
+name = 'operator-github-webhook'
+version = '0.0.0'
+description = 'Not used'
+authors = []
+dynamic = ['dependencies', 'requires-python']
