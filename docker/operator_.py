@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import logging
 import os
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import kopf
 import requests
@@ -136,7 +136,7 @@ async def update(
     status: kopf.Status,
     logger: kopf.Logger,
     **_: Any,
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any] | None:
     """Manage the update or resume of the webhook."""
     logger.info(
         "Update or resume, Name: %s, Namespace: %s",

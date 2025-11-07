@@ -1,6 +1,6 @@
 # Base of all section, install the apt packages
-FROM ubuntu:24.04 as base-all
-LABEL maintainer Camptocamp "info@camptocamp.com"
+FROM ubuntu:24.04 AS base-all
+LABEL maintainer="Camptocamp <info@camptocamp.com>"
 SHELL ["/bin/bash", "-o", "pipefail", "-cux"]
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
 ENV PATH=/venv/bin:$PATH
 
 # Used to convert the locked packages by poetry to pip requirements format
-FROM base-all as poetry
+FROM base-all AS poetry
 
 # Install Poetry
 WORKDIR /tmp
@@ -27,7 +27,7 @@ RUN poetry export --output=requirements.txt \
     && poetry export --with=dev --output=requirements-dev.txt
 
 # Do the lint, used by the tests
-FROM base-all as test
+FROM base-all AS test
 
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
@@ -37,7 +37,7 @@ WORKDIR /app
 COPY * ./
 
 # The image used to run the application
-FROM base-all as runtime
+FROM base-all AS runtime
 
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,from=poetry,source=/tmp,target=/poetry \
