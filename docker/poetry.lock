@@ -627,14 +627,14 @@ plugins = ["setuptools"]
 
 [[package]]
 name = "kopf"
-version = "1.39.1"
+version = "1.42.2"
 description = "Kubernetes Operator Pythonic Framework (Kopf)"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kopf-1.39.1-py3-none-any.whl", hash = "sha256:763623bc3b2a046b0971d0733009e1f171a67cf76b51f9050dc989dc5e787431"},
-    {file = "kopf-1.39.1.tar.gz", hash = "sha256:6062e9bd327911af7f7ba06e881114ebc4f88c31fae612812e4c6ed23fb19017"},
+    {file = "kopf-1.42.2-py3-none-any.whl", hash = "sha256:29d85eeaf8127eea8fa651b960af635058597e10fc27d34ba11d2326879b6506"},
+    {file = "kopf-1.42.2.tar.gz", hash = "sha256:16304e6e3d731b1ae3455e41fbea95a44a30e606819e06a55705df8fd9dc4ef6"},
 ]
 
 [package.dependencies]
@@ -1676,14 +1676,14 @@ files = [
 
 [[package]]
 name = "types-requests"
-version = "2.32.4.20250913"
+version = "2.32.4.20260107"
 description = "Typing stubs for requests"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "types_requests-2.32.4.20250913-py3-none-any.whl", hash = "sha256:78c9c1fffebbe0fa487a418e0fa5252017e9c60d1a2da394077f1780f655d7e1"},
-    {file = "types_requests-2.32.4.20250913.tar.gz", hash = "sha256:abd6d4f9ce3a9383f269775a9835a4c24e5cd6b9f647d64f88aa4613c33def5d"},
+    {file = "types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d"},
+    {file = "types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f"},
 ]
 
 [package.dependencies]
@@ -1868,4 +1868,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "74bcdb517e51aa5c61f6513bf5a42dd5635b3469213783b2c80f6367f203c3d5"
+content-hash = "f194c9912e4948e1dda7452be18d674333857c30ae574356d3aebbd4e8d5ba0b"
