@@ -21,7 +21,7 @@ strict = true
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.15"
-kopf = "1.39.1"
+kopf = "1.42.2"
 requests = "2.32.5"
 urllib3 = "2.6.3"
 aiohttp = "3.13.3"
@@ -33,7 +33,7 @@ python-json-logger = "4.0.0"
 prospector = { version = "1.17.3", extras = ["with_bandit", "with_mypy", "with_ruff"] }
 prospector-profile-duplicated = "1.11.0"
 prospector-profile-utils  = "1.26.5"
-types-requests = "2.32.4.20250913"
+types-requests = "2.32.4.20260107"
 types-pyyaml = "6.0.12.20250915"
 
 [project]
