@@ -625,27 +625,55 @@ files = [
 colors = ["colorama"]
 
 [[package]]
+name = "jsonpatch"
+version = "1.33"
+description = "Apply JSON-Patches (RFC 6902)"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*"
+groups = ["main"]
+files = [
+    {file = "jsonpatch-1.33-py2.py3-none-any.whl", hash = "sha256:0ae28c0cd062bbd8b8ecc26d7d164fbbea9652a1a3693f3b956c1eae5145dade"},
+    {file = "jsonpatch-1.33.tar.gz", hash = "sha256:9fcd4009c41e6d12348b4a0ff2563ba56a2923a7dfee731d004e212e1ee5030c"},
+]
+
+[package.dependencies]
+jsonpointer = ">=1.9"
+
+[[package]]
+name = "jsonpointer"
+version = "3.1.1"
+description = "Identify specific nodes in a JSON document (RFC 6901) "
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "jsonpointer-3.1.1-py3-none-any.whl", hash = "sha256:8ff8b95779d071ba472cf5bc913028df06031797532f08a7d5b602d8b2a488ca"},
+    {file = "jsonpointer-3.1.1.tar.gz", hash = "sha256:0b801c7db33a904024f6004d526dcc53bbb8a4a0f4e32bfd10beadf60adf1900"},
+]
+
+[[package]]
 name = "kopf"
-version = "1.43.0"
+version = "1.44.4"
 description = "Kubernetes Operator Pythonic Framework (Kopf)"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kopf-1.43.0-py3-none-any.whl", hash = "sha256:c601d29c317d381bbed6a0df9459d731a4ebb403e58f6998e753b76d4908bc6b"},
-    {file = "kopf-1.43.0.tar.gz", hash = "sha256:063058a4dc9960072b9b2512b3645e27955e3ae44c753ae69beeeea8ec9662e7"},
+    {file = "kopf-1.44.4-py3-none-any.whl", hash = "sha256:921b0113cd19a9bb75f80963df9d480a6fdc3a5e4bc45cc0e3bbc663433aa48c"},
+    {file = "kopf-1.44.4.tar.gz", hash = "sha256:1d8b75ec71ddb3420419a6040893fbcd5dfd754249b77d03b9902863dc0d9d45"},
 ]
 
 [package.dependencies]
 aiohttp = {version = ">=3.11.0", markers = "python_version >= \"3.12\""}
 click = ">=8.2.0"
 iso8601 = "*"
+jsonpatch = "*"
 python-json-logger = "*"
 pyyaml = "*"
 
 [package.extras]
 dev = ["certbuilder", "certvalidator", "oscrypto", "pyngrok"]
-full-auth = ["kubernetes", "pykube-ng"]
+full-auth = ["kubernetes (>=12.0.0)", "pykube-ng"]
 uvloop = ["uvloop", "uvloop (>=0.18.0) ; python_version >= \"3.12\""]
 
 [[package]]
@@ -1690,14 +1718,14 @@ files = [
 
 [[package]]
 name = "types-requests"
-version = "2.32.4.20260107"
+version = "2.32.4.20260324"
 description = "Typing stubs for requests"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d"},
-    {file = "types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f"},
+    {file = "types_requests-2.32.4.20260324-py3-none-any.whl", hash = "sha256:f83ef2deb284fe99a249b8b0b0a3e4b9809e01ff456063c4df0aac7670c07ab9"},
+    {file = "types_requests-2.32.4.20260324.tar.gz", hash = "sha256:33a2a9ccb1de7d4e4da36e347622c35418f6761269014cc32857acabd5df739e"},
 ]
 
 [package.dependencies]
@@ -1882,4 +1910,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "3524f268634ad1011e192abbbe8fde0013930106c38702a66baddc15ab1fe03a"
+content-hash = "fb9ef01ef82fe45f38b517ccd84cda31b9155e80926cb93ea7b6d3c29e024631"
