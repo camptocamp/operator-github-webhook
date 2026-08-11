@@ -83,7 +83,9 @@ AUTH_HEADER = "Bearer {}".format(
 )
 
 
-def _assert_webhooks(nb: int, hook_type: str | None = None, url: str | None = None, secret: str | None = None):
+def _assert_webhooks(
+    nb: int, hook_type: str | None = None, url: str | None = None, secret: str | None = None
+):
     for _ in range(10):
         webhooks = [
             webhook
