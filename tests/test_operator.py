@@ -83,7 +83,9 @@ AUTH_HEADER = "Bearer {}".format(
 )
 
 
-def _assert_webhooks(nb: int, hook_type: str = None, url: str = None, secret: str = None):
+def _assert_webhooks(
+    nb: int, hook_type: str | None = None, url: str | None = None, secret: str | None = None
+):
     for _ in range(10):
         webhooks = [
             webhook
@@ -112,7 +114,7 @@ def test_operator(install_operator):
     del install_operator
 
     # Initialize the source and the config
-    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"])
+    subprocess.run(["kubectl", "delete", "--filename=tests/webhook.yaml"], check=False)
 
     # Clean the old webhook
     webhooks = requests.get(
