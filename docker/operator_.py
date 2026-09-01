@@ -31,7 +31,7 @@ def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_: Any) -> N
     if "KOPF_CLIENT_TIMEOUT" in os.environ:
         settings.watching.client_timeout = int(os.environ["KOPF_CLIENT_TIMEOUT"])
     logger.info("GitHub WebHook creator started")
-    logger.debug("Start date: %s", datetime.datetime.now(datetime.timezone.utc))
+    logger.debug("Start date: %s", datetime.datetime.now(datetime.UTC))
 
 
 def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
