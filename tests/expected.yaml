@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/version: "1.16.0"
     app.kubernetes.io/managed-by: Helm
+
 ---
 # Source: operator-github-webhook/templates/crd.yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -129,6 +130,7 @@ spec:
     kind: GitHubWebhook
     shortNames:
       - ghwh
+
 ---
 # Source: operator-github-webhook/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -164,6 +166,7 @@ rules:
       - list
       - watch
       - patch
+
 ---
 # Source: operator-github-webhook/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -184,6 +187,7 @@ roleRef:
   kind: ClusterRole
   name: test-operator-github-webhook
   apiGroup: rbac.authorization.k8s.io
+
 ---
 # Source: operator-github-webhook/templates/deployment.yaml
 apiVersion: apps/v1
