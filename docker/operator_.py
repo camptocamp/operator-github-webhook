@@ -13,6 +13,7 @@ import requests
 AUTH_HEADER = f"Bearer {os.environ['GITHUB_TOKEN']}"
 ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "")
 TIMEOUT = int(os.environ.get("REQUESTS_TIMEOUT", "10"))
+GITHUB_API_URL: str = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
 
 
 def _hash(spec: kopf.Spec) -> str:
@@ -37,7 +38,7 @@ def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_: Any) -> N
 def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
     """Create the webhook."""
     webhooks_response = requests.get(
-        f"https://api.github.com/repos/{spec['repository']}/hooks",
+        f"{GITHUB_API_URL}/repos/{spec['repository']}/hooks",
         headers={
             "Accept": "application/vnd.github.v3+json",
             "Authorization": AUTH_HEADER,
@@ -63,7 +64,7 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
             delete_webhook(spec["url"], spec["repository"], webhook["id"], logger)
 
     result = requests.post(
-        f"https://api.github.com/repos/{spec['repository']}/hooks",
+        f"{GITHUB_API_URL}/repos/{spec['repository']}/hooks",
         headers={
             "Accept": "application/vnd.github.v3+json",
             "Authorization": AUTH_HEADER,
@@ -94,7 +95,7 @@ def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
 def delete_webhook(url: str, repository: str, id_: int, logger: kopf.Logger) -> None:
     """Delete the webhook."""
     result = requests.delete(
-        f"https://api.github.com/repos/{repository}/hooks/{id_}",
+        f"{GITHUB_API_URL}/repos/{repository}/hooks/{id_}",
         headers={
             "Accept": "application/vnd.github.v3+json",
             "Authorization": AUTH_HEADER,
