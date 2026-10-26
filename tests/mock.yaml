@@ -23,6 +23,8 @@ spec:
       labels:
         app: github-mock
     spec:
+      # The mock doesn't talk to the Kubernetes API
+      automountServiceAccountToken: false
       containers:
         - name: mock
           # Same image as the operator, already imported in the test cluster
