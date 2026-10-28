@@ -26,7 +26,7 @@ requests = "2.34.2"
 urllib3 = "2.8.0"
 aiohttp = "3.14.4"
 idna = { version = "3.20", optional = true }
-certifi = "2026.10.19"
+certifi = "2026.10.23"
 python-json-logger = "4.2.0"
 
 [tool.poetry.group.dev.dependencies]
