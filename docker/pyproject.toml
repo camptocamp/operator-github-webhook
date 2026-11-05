@@ -30,13 +30,13 @@ certifi = "2026.10.23"
 python-json-logger = "4.2.0"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.19.1", extras = ["with_bandit", "with_mypy", "with_ruff"] }
+prospector = { version = "1.20.0", extras = ["with_bandit", "with_mypy", "with_ruff"] }
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils  = "1.27.0"
 types-requests = "2.33.0.20261006"
 types-pyyaml = "6.0.12.20260906"
-ruff = "0.16.8"
-pylint = "4.0.9"
+ruff = "0.17.3"
+pylint = "4.1.3"
 
 [project]
 name = 'operator-github-webhook'
