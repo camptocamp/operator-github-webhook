@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright (c) 2021-2026, Camptocamp SA
 
-import datetime
+import datetime as dt
 import hashlib
 import logging
 import os
@@ -32,7 +32,7 @@ def startup(settings: kopf.OperatorSettings, logger: kopf.Logger, **_: Any) -> N
     if "KOPF_CLIENT_TIMEOUT" in os.environ:
         settings.watching.client_timeout = int(os.environ["KOPF_CLIENT_TIMEOUT"])
     logger.info("GitHub WebHook creator started")
-    logger.debug("Start date: %s", datetime.datetime.now(datetime.UTC))
+    logger.debug("Start date: %s", dt.datetime.now(dt.UTC))
 
 
 def create_webhook(spec: kopf.Spec, logger: kopf.Logger) -> dict[str, Any]:
